@@ -1,0 +1,13 @@
+# Refer for explanation to following link:
+# https://github.com/Arkweid/lefthook/blob/master/docs/full_guide.md
+pre-commit:
+  commands:
+    generate:
+      files: git ls-files -m _build/specifications && git diff --name-only --cached _build/specifications | uniq -u
+      glob: "**/*.json"
+      run: just generate
+
+    format:
+      files: git ls-files -m && git diff --name-only --cached | uniq -u
+      glob: "**/*.go"
+      run: just format | xargs git add

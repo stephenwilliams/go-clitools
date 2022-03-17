@@ -1,0 +1,133 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stephenwilliams/go-clitools/master/tools.schema.json",
+  "name": "Lefthook",
+  "description": "Fast and powerful Git hooks manager for Node.js, Ruby or any other type of projects.",
+  "executableName": "lefthook",
+  "package": "lefthook",
+  "exportedName": "Lefthook",
+  "versionProvider": {
+    "commandArgs": ["version"],
+    "selector": {}
+  },
+  "groups": [
+    {
+      "package": "@",
+      "description": "",
+      "commands": [
+        {
+          "name": "add",
+          "description": "This command will try to build the following structure in repository:\n\n├───.git\n│   └───hooks\n│       └───pre-commit // this executable will be added. Existed file with\n│                      // same name will be renamed to pre-commit.old\n(lefthook add this dirs if you run command with -d option)\n│\n├───.lefthook            // directory for project level hooks\n│   └───pre-commit     // directory with hooks executables\n├───.lefthook-local      // directory for personal hooks add it in .gitignore\n│   └───pre-commit",
+          "exportedName": "Add",
+          "subCommandPath": ["add"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": [
+                {
+                  "name": "hooksGroup",
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "install",
+          "description": "Write basic configuration file in your project repository. Or initialize existed config",
+          "exportedName": "Install",
+          "subCommandPath": ["install"],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ]
+        },
+        {
+          "name": "run",
+          "description": "Execute group of hooks",
+          "exportedName": "Run",
+          "subCommandPath": ["run"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": [
+                {
+                  "name": "hooksGroup",
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "uninstall",
+          "description": "Revert install command",
+          "exportedName": "Uninstall",
+          "subCommandPath": ["uninstall"],
+          "options": [
+            {
+              "name": "keepConfig",
+              "exportedName": "KeepConfig",
+              "type": "boolean",
+              "description": "keep configuration files and source directories present",
+              "noValue": true,
+              "format": ["--keep-config"]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ]
+        },
+        {
+          "name": "version",
+          "description": "Show lefthook version",
+          "exportedName": "Version",
+          "subCommandPath": ["version"]
+        }
+      ]
+    }
+  ],
+  "optionSets": [
+    {
+      "name": "base",
+      "options": [
+        {
+          "name": "aggressive",
+          "exportedName": "Aggressive",
+          "type": "boolean",
+          "description": "remove all hooks from .git/hooks dir and install lefthook hooks",
+          "noValue": true,
+          "format": ["--aggressive"]
+        },
+        {
+          "name": "force",
+          "exportedName": "Force",
+          "type": "boolean",
+          "description": "reinstall hooks without checking config version",
+          "noValue": true,
+          "format": ["--aggressive"]
+        },
+        {
+          "name": "noColors",
+          "exportedName": "NoColors",
+          "type": "boolean",
+          "description": "disable colored output",
+          "noValue": true,
+          "format": ["--no-colors"]
+        },
+        {
+          "name": "verbose",
+          "exportedName": "Verbose",
+          "type": "boolean",
+          "description": "",
+          "noValue": true,
+          "format": ["--verbose"]
+        }
+      ]
+    }
+  ]
+}

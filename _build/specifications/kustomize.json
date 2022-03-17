@@ -1,0 +1,1406 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stephenwilliams/go-clitools/master/tools.schema.json",
+  "name": "kustomize",
+  "description": "Manages declarative configuration of Kubernetes.",
+  "executableName": "kustomize",
+  "package": "kustomize",
+  "exportedName": "Kustomize",
+  "versionProvider": {
+    "commandArgs": ["version", "--short"],
+    "selector": {
+      "splitLine": {
+        "index": 0
+      },
+      "splitString": {
+        "index": 0
+      },
+      "trimPrefix": "{kustomize/v"
+    }
+  },
+  "defaultToolProvider": {
+    "chain": {
+      "providers": [
+        {
+          "path": true
+        },
+        {
+          "downloader": {
+            "downloader": "GithubReleaseDownloader"
+          }
+        }
+      ]
+    }
+  },
+  "downloaders": {
+    "githubRelease": {
+      "owner": "kubernetes-sigs",
+      "repository": "kustomize",
+      "assetSelector": "kustomize_v{{trimPrefix \"v\" .Version}}_{{.OS}}_{{.Arch}}.tar.gz",
+      "archived": true,
+      "archivePath": "kustomize"
+    }
+  },
+  "groups": [
+    {
+      "package": "@",
+      "description": "",
+      "commands": [
+        {
+          "name": "build",
+          "description": "Build a set of KRM resources using a 'kustomization.yaml' file.",
+          "exportedName": "Build",
+          "subCommandPath": ["build"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withPath",
+              "exportedNameSuffix": "WithPath",
+              "args": [
+                {
+                  "name": "path",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "global"
+            }
+          ],
+          "options": [
+            {
+              "name": "asCurrentUser",
+              "exportedName": "AsCurrentUser",
+              "description": "use the uid and gid of the command executor to run the function in the container",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--as-current-user"]
+            },
+            {
+              "name": "enableAlphaPlugins",
+              "exportedName": "EnableAlphaPlugins",
+              "description": "enable kustomize plugins",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--enable-alpha-plugins"]
+            },
+            {
+              "name": "enableExec",
+              "exportedName": "EnableExec",
+              "description": "enable support for exec functions (raw executables); do not use for untrusted configs! (Alpha)",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--enable-exec"]
+            },
+            {
+              "name": "enableHelm",
+              "exportedName": "EnableHelm",
+              "description": "Enable use of the Helm chart inflator generator.",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--enable-helm"]
+            },
+            {
+              "name": "enableManagedByLabel",
+              "exportedName": "EnableManagedByLabel",
+              "description": "enable adding app.kubernetes.io/managed-by",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--enable-managed-by-label"]
+            },
+            {
+              "name": "enableStar",
+              "exportedName": "EnableStar",
+              "description": "enable support for starlark functions. (Alpha)",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--enable-star"]
+            },
+            {
+              "name": "env",
+              "exportedName": "Env",
+              "description": "a list of environment variables to be used by functions",
+              "type": "stringSlice",
+              "repeated": true,
+              "format": ["--env", "%s"]
+            },
+            {
+              "name": "helmCommand",
+              "exportedName": "HelmCommand",
+              "description": "helm command (path to executable) (default \"helm\")",
+              "type": "string",
+              "format": ["--helm-command", "%s"]
+            },
+            {
+              "name": "loadRestrictor",
+              "exportedName": "LoadRestrictor",
+              "description": "if set to 'LoadRestrictionsNone', local kustomizations may load files from outside their root. This does, however, break the relocatability of the kustomization. (default \"LoadRestrictionsRootOnly\")",
+              "type": "string",
+              "format": ["--load-restrictor", "%s"]
+            },
+            {
+              "name": "mount",
+              "exportedName": "Mount",
+              "description": "a list of storage options read from the filesystem",
+              "type": "stringSlice",
+              "repeated": true,
+              "format": ["--mount", "%s"]
+            },
+            {
+              "name": "network",
+              "exportedName": "Network",
+              "description": "enable network access for functions that declare it",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--network"]
+            },
+            {
+              "name": "networkName",
+              "exportedName": "NetworkName",
+              "description": "the docker network to run the container in (default \"bridge\")",
+              "type": "string",
+              "format": ["--network-name", "%s"]
+            },
+            {
+              "name": "output",
+              "exportedName": "Output",
+              "description": "If specified, write output to this path.",
+              "type": "string",
+              "format": ["--output", "%s"]
+            },
+            {
+              "name": "reorder",
+              "exportedName": "Reorder",
+              "description": "Reorder the resources just before output. Use 'legacy' to apply a legacy reordering (Namespaces first, Webhooks last, etc). Use 'none' to suppress a final reordering. (default \"legacy\")",
+              "type": "string",
+              "format": ["--reorder", "%s"]
+            }
+          ]
+        },
+        {
+          "name": "create",
+          "exportedName": "Create",
+          "description": "Create a new kustomization in the current directory",
+          "argumentSets": [],
+          "optionSets": [{
+            "name": "global"
+          }
+          ],
+          "options": [
+            {
+              "name": "annotations",
+              "exportedName": "Annotations",
+              "description": "Add one or more common annotations.",
+              "type": "string",
+              "format": ["--annotations", "%s"]
+            },
+            {
+              "name": "autodetect",
+              "exportedName": "Autodetect",
+              "description": "Search for kubernetes resources in the current directory to be added to the kustomization file.",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--autodetect"]
+            },
+            {
+              "name": "labels",
+              "exportedName": "Labels",
+              "description": "Add one or more common labels",
+              "type": "string",
+              "format": ["--labels", "%s"]
+            },
+            {
+              "name": "nameprefix",
+              "exportedName": "NamePrefix",
+              "description": "Sets the value of the namePrefix field in the kustomization file.",
+              "type": "string",
+              "format": ["--nameprefix", "%s"]
+            },
+            {
+              "name": "namespace",
+              "exportedName": "Namespace",
+              "description": "Set the value of the namespace field in the customization file.",
+              "type": "string",
+              "format": ["--namespace", "%s"]
+            },
+            {
+              "name": "namesuffix",
+              "exportedName": "NameSuffix",
+              "description": "Sets the value of the nameSuffix field in the kustomization file.",
+              "type": "string",
+              "format": ["--namesuffix", "%s"]
+            },
+            {
+              "name": "recursive",
+              "exportedName": "Recursive",
+              "description": "Enable recursive directory searching for resource auto-detection.",
+              "type": "boolean",
+              "format": ["--recursive"]
+            },
+            {
+              "name": "resources",
+              "exportedName": "Resources",
+              "description": "Name of a file containing a file to add to the kustomization file.",
+              "type": "string",
+              "format": ["--resources", "%s"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": "cfg",
+      "description": "Commands for reading and writing configuration",
+      "commands": [
+        {
+          "name": "cat",
+          "exportedName": "Cat",
+          "description": "[Alpha] Print Resource Config from a local directory.",
+          "subCommandPath": ["cfg", "cat"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withPath",
+              "exportedNameSuffix": "WithPath",
+              "args": [
+                {
+                  "name": "path",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "global"
+            }
+          ],
+          "options": [
+            {
+              "name": "annotate",
+              "exportedName": "Annotate",
+              "description": "annotate resources with their file origins.",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--annotate"]
+            },
+            {
+              "name": "dest",
+              "exportedName": "Dest",
+              "description": "if specified, write output to a file rather than stdout",
+              "type": "string",
+              "format": ["--dest", "%s"]
+            },
+            {
+              "name": "excludeNonLocal",
+              "exportedName": "ExcludeNonLocal",
+              "description": "if true, exclude non-local-config in the output.",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--exclude-non-local"]
+            },
+            {
+              "name": "format",
+              "exportedName": "Format",
+              "description": "format resource config yaml before printing. (default true)",
+              "type": "boolean",
+              "format": ["--format", "%v"]
+            },
+            {
+              "name": "functionConfig",
+              "exportedName": "FunctionConfig",
+              "description": "path to function config to put in ResourceList -- only if wrapped in a ResourceList.",
+              "type": "string",
+              "format": ["--function-config", "%s"]
+            },
+            {
+              "name": "includeLocal",
+              "exportedName": "IncludeLocal",
+              "description": "if true, include local-config in the output.",
+              "type": "boolean",
+              "format": ["--include-local"]
+            },
+            {
+              "name": "recurseSubpackages",
+              "exportedName": "RecurseSubpackages",
+              "description": "print resources recursively in all the nested subpackages (default true)",
+              "type": "boolean",
+              "noValue": false,
+              "format": ["--recurse-subpackages", "%v"]
+            },
+            {
+              "name": "stripComments",
+              "exportedName": "StripComments",
+              "description": "remove comments from yaml.",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--strip-comments"]
+            },
+            {
+              "name": "style",
+              "exportedName": "Style",
+              "description": "yaml styles to apply.  may be 'TaggedStyle', 'DoubleQuotedStyle', 'LiteralStyle', 'FoldedStyle', 'FlowStyle'.",
+              "type": "string",
+              "format": ["--style", "%s"]
+            },
+            {
+              "name": "wrapKind",
+              "exportedName": "WrapKind",
+              "description": "if set, wrap the output in this list type kind.",
+              "type": "string",
+              "format": ["--wrap-kind", "%s"]
+            },
+            {
+              "name": "wrapVersion",
+              "exportedName": "WrapVersion",
+              "description": "if set, wrap the output in this list type apiVersion.",
+              "type": "string",
+              "format": ["--wrap-version", "%s"]
+            }
+          ]
+        },
+        {
+          "name": "count",
+          "exportedName": "Count",
+          "description": "[Alpha] Count Resources Config from a local directory.",
+          "subCommandPath": ["cfg", "count"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withPath",
+              "exportedNameSuffix": "WithPath",
+              "args": [
+                {
+                  "name": "path",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "global"
+            }
+          ],
+          "options": [
+            {
+              "name": "recurseSubpackages",
+              "exportedName": "RecurseSubpackages",
+              "description": "print resources recursively in all the nested subpackages (default true)",
+              "type": "boolean",
+              "noValue": false,
+              "format": ["--recurse-subpackages", "%v"]
+            },
+            {
+              "name": "kind",
+              "exportedName": "Kind",
+              "description": "count resources by kind. (default true)",
+              "type": "boolean",
+              "format": ["--kind", "%v"]
+            }
+          ]
+        },
+        {
+          "name": "grep",
+          "exportedName": "Grep",
+          "description": "[[Alpha] Search for matching Resources in a directory or from stdin.\n\n  QUERY:\n    Query to match expressed as 'path.to.field=value'.\n    Maps and fields are matched as '.field-name' or '.map-key'\n    List elements are matched as '[list-elem-field=field-value]'\n    The value to match is expressed as '=value'\n    '.' as part of a key or value can be escaped as '\\.'",
+          "subCommandPath": ["cfg", "grep"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": [
+                {
+                  "name": "query",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "withPath",
+              "exportedNameSuffix": "WithPath",
+              "args": [
+                {
+                  "name": "query",
+                  "type": "string"
+                },
+                {
+                  "name": "path",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "global"
+            }
+          ],
+          "options": [
+            {
+              "name": "recurseSubpackages",
+              "exportedName": "RecurseSubpackages",
+              "description": "print resources recursively in all the nested subpackages (default true)",
+              "type": "boolean",
+              "noValue": false,
+              "format": ["--recurse-subpackages", "%v"]
+            },
+            {
+              "name": "annotate",
+              "exportedName": "Annotate",
+              "description": "annotate resources with their file origins. (default true)",
+              "type": "boolean",
+              "format": ["--annotate", "%v"]
+            },
+            {
+              "name": "invertMatch",
+              "exportedName": "InvertMatch",
+              "description": "Selected Resources are those not matching any of the specified patterns..",
+              "type": "boolean",
+              "format": ["--invert-match", "%v"]
+            }
+          ]
+        },
+        {
+          "name": "tree",
+          "exportedName": "Tree",
+          "description": "[Alpha] Display Resource structure from a directory or stdin.\n\nkustomize cfg tree may be used to print Resources in a directory or cluster, preserving structure\n\nArgs:\n\n  DIR:\n    Path to local directory directory.\n\nResource fields may be printed as part of the Resources by specifying the fields as flags.\n\nkustomize cfg tree has build-in support for printing common fields, such as replicas, container images,\ncontainer names, etc.\n\nkustomize cfg tree supports printing arbitrary fields using the '--field' flag.\n\nBy default, kustomize cfg tree uses Resource graph structure if any relationships between resources (ownerReferences)\nare detected, as is typically the case when printing from a cluster. Otherwise, directory graph structure is used. The\ngraph structure can also be selected explicitly using the '--graph-structure' flag.",
+          "subCommandPath": ["cfg", "tree"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withPath",
+              "exportedNameSuffix": "WithPath",
+              "args": [
+                {
+                  "name": "path",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "global"
+            }
+          ],
+          "options": [
+            {
+              "name": "all",
+              "exportedName": "All",
+              "description": "print all field infos",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--all"]
+            },
+            {
+              "name": "args",
+              "exportedName": "Args",
+              "description": "print args field",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--args"]
+            },
+            {
+              "name": "command",
+              "exportedName": "Command",
+              "description": "print command field",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--command"]
+            },
+            {
+              "name": "env",
+              "exportedName": "Env",
+              "description": "print env field",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--env"]
+            },
+            {
+              "name": "excludeNonLocal",
+              "exportedName": "ExcludeNonLocal",
+              "description": "if true, exclude non-local-config in the output.",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--exclude-non-local"]
+            },
+            {
+              "name": "field",
+              "exportedName": "Field",
+              "description": "print field",
+              "type": "stringSlice",
+              "repeated": true,
+              "format": ["--field", "%s"]
+            },
+            {
+              "name": "graphStructure",
+              "exportedName": "GraphStructure",
+              "description": "Graph structure to use for printing the tree.  may be any of: owners,directory",
+              "type": "string",
+              "format": ["--graph-structure", "%s"]
+            },
+            {
+              "name": "image",
+              "exportedName": "Image",
+              "description": "print image field",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--image"]
+            },
+            {
+              "name": "includeLocal",
+              "exportedName": "IncludeLocal",
+              "description": "if true, include local-config in the output.",
+              "type": "boolean",
+              "format": ["--include-local"]
+            },
+            {
+              "name": "name",
+              "exportedName": "Name",
+              "description": "print name field",
+              "type": "boolean",
+              "format": ["--name"]
+            },
+            {
+              "name": "ports",
+              "exportedName": "Ports",
+              "description": "print ports field",
+              "type": "boolean",
+              "format": ["--ports"]
+            },
+            {
+              "name": "replicas",
+              "exportedName": "Replicas",
+              "description": "print replicas field",
+              "type": "boolean",
+              "format": ["--replicas"]
+            },
+            {
+              "name": "resources",
+              "exportedName": "Resources",
+              "description": "print resources field",
+              "type": "boolean",
+              "format": ["--resources"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": "edit",
+      "description": "Edits a kustomization file",
+      "commands": [
+        {
+          "name": "fix",
+          "exportedName": "Fix",
+          "description": "Fix the missing fields in kustomization file",
+          "subCommandPath": ["edit", "fix"],
+          "optionSets": [
+            {
+              "name": "global"
+            }
+          ],
+          "options": [
+            {
+              "name": "vars",
+              "exportedName": "Vars",
+              "description": "Fix the missing fields in kustomization file",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--vars"]
+            }
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "package": "add",
+          "description": "Adds an item to the kustomization file.",
+          "commands": [
+            {
+              "name": "annotation",
+              "exportedName": "Annotation",
+              "description": "Adds one or more commonAnnotations to kustomization.yaml",
+              "subCommandPath": ["edit", "add", "annotation"],
+              "argumentSets": [
+                {
+                  "name": "@",
+                  "exportedNameSuffix": "",
+                  "description": "format {annotationKey1:annotationValue1}",
+                  "args": [
+                    {
+                      "name": "annotation",
+                      "type": "string"
+                    }
+                  ]
+                },
+                {
+                  "name": "withAnnotations",
+                  "exportedNameSuffix": "WithAnnotations",
+                  "description": "format {annotationKey1:annotationValue1}",
+                  "args": [
+                    {
+                      "name": "annotations",
+                      "type": "stringSlice"
+                    }
+                  ]
+                }
+              ],
+              "optionSets": [
+                {
+                  "name": "global"
+                }
+              ],
+              "options": [
+                {
+                  "name": "force",
+                  "exportedName": "Force",
+                  "description": "overwrite commonAnnotation if it already exists",
+                  "type": "boolean",
+                  "noValue": true,
+                  "format": ["--force"]
+                }
+              ]
+            },
+            {
+              "name": "base",
+              "exportedName": "Base",
+              "description": "Adds one or more bases to the kustomization.yaml in current directory",
+              "subCommandPath": ["edit", "add", "base"],
+              "argumentSets": [
+                {
+                  "name": "@",
+                  "exportedNameSuffix": "",
+                  "args": [
+                    {
+                      "name": "filePath",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ],
+              "optionSets": [
+                {
+                  "name": "global"
+                }
+              ]
+            },
+            {
+              "name": "component",
+              "exportedName": "Component",
+              "description": "Add the name of a file containing a component to the kustomization file.",
+              "subCommandPath": ["edit", "add", "component"],
+              "argumentSets": [
+                {
+                  "name": "@",
+                  "exportedNameSuffix": "",
+                  "args": [
+                    {
+                      "name": "filePath",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ],
+              "optionSets": [
+                {
+                  "name": "global"
+                }
+              ]
+            },
+            {
+              "name": "configmap",
+              "exportedName": "ConfigMap",
+              "description": "Adds a configmap to the kustomization file.",
+              "subCommandPath": ["edit", "add", "configmap"],
+              "argumentSets": [
+                {
+                  "name": "@",
+                  "exportedNameSuffix": "",
+                  "args": [
+                    {
+                      "name": "name",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ],
+              "optionSets": [
+                {
+                  "name": "global"
+                }
+              ],
+              "options": [
+                {
+                  "name": "behavior",
+                  "exportedName": "Behavior",
+                  "description": "Specify the behavior for config map generation, i.e whether to create a new configmap (the default),  to merge with a previously defined one, or to replace an existing one. Merge and replace should be used only  when overriding an existing configmap defined in a base",
+                  "type": "string",
+                  "format": ["--behavior", "%s"]
+                },
+                {
+                  "name": "disableNameSuffixHash",
+                  "exportedName": "DisableNameSuffixHash",
+                  "description": "Disable the name suffix for the configmap",
+                  "type": "boolean",
+                  "noValue": true,
+                  "format": ["--disableNameSuffixHash"]
+                },
+                {
+                  "name": "fromEnvFile",
+                  "exportedName": "FromEnvFile",
+                  "description": "Specify the path to a file to read lines of key=val pairs to create a configmap (i.e. a Docker .env file).",
+                  "type": "string",
+                  "format": ["--from-env-file", "%s"]
+                },
+                {
+                  "name": "fromFile",
+                  "exportedName": "FromFile",
+                  "description": "Key file can be specified using its file path, in which case file basename will be used as configmap key, or optionally with a key and file path, in which case the given key will be used.  Specifying a directory will iterate each named file in the directory whose basename is a valid configmap key.",
+                  "type": "string",
+                  "format": ["--from-file", "%s"]
+                },
+                {
+                  "name": "fromLiteral",
+                  "exportedName": "FromLiteral",
+                  "description": "Specify a key and literal value to insert in configmap (i.e. mykey=somevalue)",
+                  "type": "stringSlice",
+                  "repeated": true,
+                  "format": ["--from-literal", "%s"]
+                }
+              ]
+            },
+            {
+              "name": "label",
+              "exportedName": "Label",
+              "description": "Adds one or more commonAnnotations to kustomization.yaml",
+              "subCommandPath": ["edit", "add", "label"],
+              "argumentSets": [
+                {
+                  "name": "@",
+                  "exportedNameSuffix": "",
+                  "description": "format {labelKey1:labelValue1}",
+                  "args": [
+                    {
+                      "name": "label",
+                      "type": "string"
+                    }
+                  ]
+                },
+                {
+                  "name": "withLabels",
+                  "exportedNameSuffix": "WithLabels",
+                  "description": "format {labelKey1:labelValue1}",
+                  "args": [
+                    {
+                      "name": "labels",
+                      "type": "stringSlice"
+                    }
+                  ]
+                }
+              ],
+              "optionSets": [
+                {
+                  "name": "global"
+                }
+              ],
+              "options": [
+                {
+                  "name": "force",
+                  "exportedName": "Force",
+                  "description": "overwrite commonAnnotation if it already exists",
+                  "type": "boolean",
+                  "noValue": true,
+                  "format": ["--force"]
+                }
+              ]
+            },
+            {
+              "name": "patch",
+              "exportedName": "Patch",
+              "description": "This command will add an item to patches field in the kustomization file.\nEach item may:\n\n - be either a strategic merge patch, or a JSON patch\n - be either a file, or an inline string\n - target a single resource or multiple resources\n\nFor more information please see https://kubernetes-sigs.github.io/kustomize/api-reference/kustomization/patches/",
+              "subCommandPath": ["edit", "add", "patch"],
+              "argumentSets": [],
+              "optionSets": [
+                {
+                  "name": "global"
+                }
+              ],
+              "options": [
+                {
+                  "name": "annotationSelector",
+                  "exportedName": "AnnotationSelector",
+                  "description": "annotationSelector in patch target",
+                  "type": "string",
+                  "format": ["--annotation-selector", "%s"]
+                },
+                {
+                  "name": "group",
+                  "exportedName": "Group",
+                  "description": "API group in patch target",
+                  "type": "string",
+                  "format": ["--group", "%s"]
+                },
+                {
+                  "name": "kind",
+                  "exportedName": "Kind",
+                  "description": "Resource kind in patch target",
+                  "type": "string",
+                  "format": ["--kind", "%s"]
+                },
+                {
+                  "name": "labelSelector",
+                  "exportedName": "LabelSelector",
+                  "description": "labelSelector in patch target",
+                  "type": "string",
+                  "format": ["--label-selector", "%s"]
+                },
+                {
+                  "name": "name",
+                  "exportedName": "Name",
+                  "description": "Resource name in patch target",
+                  "type": "string",
+                  "format": ["--name", "%s"]
+                },
+                {
+                  "name": "namespace",
+                  "exportedName": "Namespace",
+                  "description": "Resource namespace in patch target",
+                  "type": "string",
+                  "format": ["--namespace", "%s"]
+                },
+                {
+                  "name": "patch",
+                  "exportedName": "PatchContent",
+                  "description": "Literal string of patch content. Cannot be used with --path at the same time.",
+                  "type": "string",
+                  "format": ["--patch", "%s"]
+                },
+                {
+                  "name": "path",
+                  "exportedName": "Path",
+                  "description": "Path to the patch file. Cannot be used with --patch at the same time.",
+                  "type": "string",
+                  "format": ["--path", "%s"]
+                },
+                {
+                  "name": "version",
+                  "exportedName": "Version",
+                  "description": "API version in patch target",
+                  "type": "string",
+                  "format": ["--version", "%s"]
+                }
+              ]
+            },
+            {
+              "name": "resource",
+              "exportedName": "Resource",
+              "description": "Add the name of a file containing a resource to the kustomization file.",
+              "subCommandPath": ["edit", "add", "resource"],
+              "argumentSets": [
+                {
+                  "name": "@",
+                  "exportedNameSuffix": "",
+                  "args": [
+                    {
+                      "name": "filePath",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ],
+              "optionSets": [
+                {
+                  "name": "global"
+                }
+              ]
+            },
+            {
+              "name": "secret",
+              "exportedName": "Secret",
+              "description": "Adds a secret to the kustomization file.",
+              "subCommandPath": ["edit", "add", "secret"],
+              "argumentSets": [
+                {
+                  "name": "@",
+                  "exportedNameSuffix": "",
+                  "args": [
+                    {
+                      "name": "name",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ],
+              "optionSets": [
+                {
+                  "name": "global"
+                }
+              ],
+              "options": [
+                {
+                  "name": "disableNameSuffixHash",
+                  "exportedName": "DisableNameSuffixHash",
+                  "description": "Disable the name suffix for the secret",
+                  "type": "boolean",
+                  "noValue": true,
+                  "format": ["--disableNameSuffixHash"]
+                },
+                {
+                  "name": "fromEnvFile",
+                  "exportedName": "FromEnvFile",
+                  "description": "Specify the path to a file to read lines of key=val pairs to create a secret (i.e. a Docker .env file).",
+                  "type": "string",
+                  "format": ["--from-env-file", "%s"]
+                },
+                {
+                  "name": "fromFile",
+                  "exportedName": "FromFile",
+                  "description": "Key file can be specified using its file path, in which case file basename will be used as secret key, or optionally with a key and file path, in which case the given key will be used.  Specifying a directory will iterate each named file in the directory whose basename is a valid secret key.",
+                  "type": "string",
+                  "format": ["--from-file", "%s"]
+                },
+                {
+                  "name": "fromLiteral",
+                  "exportedName": "FromLiteral",
+                  "description": "Specify a key and literal value to insert in secret (i.e. mykey=somevalue)",
+                  "type": "stringSlice",
+                  "repeated": true,
+                  "format": ["--from-literal", "%s"]
+                },
+                {
+                  "name": "namespace",
+                  "exportedName": "Namespace",
+                  "description": "Specify the namespace of the secret",
+                  "type": "string",
+                  "format": ["--namespace", "%s"]
+                },
+                {
+                  "name": "typeName",
+                  "exportedName": "Type",
+                  "description": "Specify the secret type this can be 'Opaque' (default), or 'kubernetes.io/tls' (default \"Opaque\")",
+                  "type": "string",
+                  "format": ["--type", "%s"]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "package": "remove",
+          "description": "Removes items from the kustomization file.",
+          "commands": [
+            {
+              "name": "annotation",
+              "exportedName": "Annotation",
+              "description": "Removes one or more commonAnnotations from kustomization.yaml",
+              "subCommandPath": ["edit", "remove", "annotation"],
+              "argumentSets": [
+                {
+                  "name": "@",
+                  "exportedNameSuffix": "",
+                  "description": "format {annotationKey1},{annotationKey2}",
+                  "args": [
+                    {
+                      "name": "annotation",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ],
+              "optionSets": [
+                {
+                  "name": "global"
+                }
+              ],
+              "options": [
+                {
+                  "name": "ignoreNonExistence",
+                  "exportedName": "IgnoreNonExistence",
+                  "description": "ignore error if the given annotation doesn't exist",
+                  "type": "boolean",
+                  "noValue": true,
+                  "format": ["--ignore-non-existence"]
+                }
+              ]
+            },
+            {
+              "name": "label",
+              "exportedName": "Label",
+              "description": "Removes one or more commonLabels from kustomization.yaml",
+              "subCommandPath": ["edit", "remove", "label"],
+              "argumentSets": [
+                {
+                  "name": "@",
+                  "exportedNameSuffix": "",
+                  "description": "format {labelKey1},{labelKey2}",
+                  "args": [
+                    {
+                      "name": "label",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ],
+              "optionSets": [
+                {
+                  "name": "global"
+                }
+              ],
+              "options": [
+                {
+                  "name": "ignoreNonExistence",
+                  "exportedName": "IgnoreNonExistence",
+                  "description": "ignore error if the given label doesn't exist",
+                  "type": "boolean",
+                  "noValue": true,
+                  "format": ["--ignore-non-existence"]
+                }
+              ]
+            },
+            {
+              "name": "patch",
+              "exportedName": "Patch",
+              "description": "Removes a patch from patches field. The fields specified by flags must\nexactly match the patch item to successfully remote the item.",
+              "subCommandPath": ["edit", "remove", "patch"],
+              "optionSets": [
+                {
+                  "name": "global"
+                }
+              ],
+              "options": [
+                {
+                  "name": "annotationSelector",
+                  "exportedName": "AnnotationSelector",
+                  "description": "annotationSelector in patch target",
+                  "type": "string",
+                  "format": ["--annotation-selector", "%s"]
+                },
+                {
+                  "name": "group",
+                  "exportedName": "Group",
+                  "description": "API group in patch target",
+                  "type": "string",
+                  "format": ["--group", "%s"]
+                },
+                {
+                  "name": "kind",
+                  "exportedName": "Kind",
+                  "description": "Resource kind in patch target",
+                  "type": "string",
+                  "format": ["--kind", "%s"]
+                },
+                {
+                  "name": "labelSelector",
+                  "exportedName": "LabelSelector",
+                  "description": "labelSelector in patch target",
+                  "type": "string",
+                  "format": ["--label-selector", "%s"]
+                },
+                {
+                  "name": "name",
+                  "exportedName": "Name",
+                  "description": "Resource name in patch target",
+                  "type": "string",
+                  "format": ["--name", "%s"]
+                },
+                {
+                  "name": "namespace",
+                  "exportedName": "Namespace",
+                  "description": "Resource namespace in patch target",
+                  "type": "string",
+                  "format": ["--namespace", "%s"]
+                },
+                {
+                  "name": "patch",
+                  "exportedName": "PatchContent",
+                  "description": "Literal string of patch content. Cannot be used with --path at the same time.",
+                  "type": "string",
+                  "format": ["--patch", "%s"]
+                },
+                {
+                  "name": "path",
+                  "exportedName": "Path",
+                  "description": "Path to the patch file. Cannot be used with --patch at the same time.",
+                  "type": "string",
+                  "format": ["--path", "%s"]
+                },
+                {
+                  "name": "version",
+                  "exportedName": "Version",
+                  "description": "API version in patch target",
+                  "type": "string",
+                  "format": ["--version", "%s"]
+                }
+              ]
+            },
+            {
+              "name": "resource",
+              "exportedName": "Resource",
+              "description": "Removes one or more resource file paths from kustomization.yaml",
+              "subCommandPath": ["edit","remove", "resource"],
+              "argumentSets": [
+                {
+                  "name": "@",
+                  "description": "",
+                  "exportedNameSuffix": "",
+                  "args": [
+                    {
+                      "name": "filePath",
+                      "type": "string"
+                    }
+                  ]
+                },
+                {
+                  "name": "withFilePaths",
+                  "description": "",
+                  "exportedNameSuffix": "WithFilePaths",
+                  "args": [
+                    {
+                      "name": "filePaths",
+                      "type": "stringSlice"
+                    }
+                  ]
+                }
+              ],
+              "optionSets": [
+                {
+                  "name": "global"
+                }
+              ]
+            },
+            {
+              "name": "transformer",
+              "exportedName": "Transformer",
+              "description": "Removes one or more transformers from kustomization.yaml",
+              "subCommandPath": ["edit","remove", "transformer"],
+              "argumentSets": [
+                {
+                  "name": "@",
+                  "description": "",
+                  "exportedNameSuffix": "",
+                  "args": [
+                    {
+                      "name": "filePath",
+                      "type": "string"
+                    }
+                  ]
+                },
+                {
+                  "name": "withFilePaths",
+                  "description": "",
+                  "exportedNameSuffix": "WithFilePaths",
+                  "args": [
+                    {
+                      "name": "filePaths",
+                      "type": "stringSlice"
+                    }
+                  ]
+                }
+              ],
+              "optionSets": [
+                {
+                  "name": "global"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "package": "set",
+          "description": "Sets the value of different fields in kustomization file.",
+          "commands": [
+            {
+              "name": "annotation",
+              "exportedName": "Annotation",
+              "description": "Sets one or more commonAnnotations in kustomization.yaml",
+              "subCommandPath": ["edit", "set", "annotation"],
+              "argumentSets": [
+                {
+                  "name": "@",
+                  "exportedNameSuffix": "",
+                  "description": "format {annotationKey1:annotationValue1} {annotationKey2:annotationValue2}",
+                  "args": [
+                    {
+                      "name": "annotation",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "image",
+              "exportedName": "Image",
+              "description": "Sets images and their new names, new tags or digests in the kustomization file",
+              "subCommandPath": ["edit", "set", "image"],
+              "argumentSets": [
+                {
+                  "name": "@",
+                  "exportedNameSuffix": "",
+                  "description": "",
+                  "args": [
+                    {
+                      "name": "image",
+                      "type": "string"
+                    }
+                  ]
+                },
+                {
+                  "name": "withImages",
+                  "exportedNameSuffix": "WithImages",
+                  "description": "",
+                  "args": [
+                    {
+                      "name": "images",
+                      "type": "stringSlice"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "label",
+              "exportedName": "Label",
+              "description": "Sets one or more commonLabels in kustomization.yaml",
+              "subCommandPath": ["edit", "set", "label"],
+              "argumentSets": [
+                {
+                  "name": "@",
+                  "exportedNameSuffix": "",
+                  "description": "format {labelKey1:labelValue1} {labelKey2:labelValue2}",
+                  "args": [
+                    {
+                      "name": "label",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "nameprefix",
+              "exportedName": "NamePrefix",
+              "description": "Sets the value of the namePrefix field in the kustomization file.",
+              "subCommandPath": ["edit", "set", "nameprefix"],
+              "argumentSets": [
+                {
+                  "name": "@",
+                  "exportedNameSuffix": "",
+                  "description": "",
+                  "args": [
+                    {
+                      "name": "prefix",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "namespace",
+              "exportedName": "Namespace",
+              "description": "Sets the value of the namespace field in the kustomization file",
+              "subCommandPath": ["edit", "set", "namespace"],
+              "argumentSets": [
+                {
+                  "name": "@",
+                  "exportedNameSuffix": "",
+                  "description": "",
+                  "args": [
+                    {
+                      "name": "namespace",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "namesuffix",
+              "exportedName": "NameSuffix",
+              "description": "Sets the value of the nameSuffix field in the kustomization file.",
+              "subCommandPath": ["edit", "set", "namesuffix"],
+              "argumentSets": [
+                {
+                  "name": "@",
+                  "exportedNameSuffix": "",
+                  "description": "",
+                  "args": [
+                    {
+                      "name": "suffix",
+                      "type": "string"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "replicas",
+              "exportedName": "Replicas",
+              "description": "Sets replicas count for resources in the kustomization file",
+              "subCommandPath": ["edit", "set", "label"],
+              "argumentSets": [
+                {
+                  "name": "@",
+                  "exportedNameSuffix": "",
+                  "description": "format my-app=3 other-app=1",
+                  "args": [
+                    {
+                      "name": "replicas",
+                      "type": "string"
+                    }
+                  ]
+                },
+                {
+                  "name": "withReplicas",
+                  "exportedNameSuffix": "WithReplices",
+                  "description": "",
+                  "args": [
+                    {
+                      "name": "replicas",
+                      "type": "stringSlice"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "optionSets": [
+    {
+      "name": "global",
+      "options": [
+        {
+          "name": "stackTrace",
+          "exportedName": "StackTrace",
+          "description": "print a stack-trace on error",
+          "type": "boolean",
+          "noValue": true,
+          "format": ["--stack-trace"]
+        }
+      ]
+    }
+  ]
+}

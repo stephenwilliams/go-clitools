@@ -1,0 +1,192 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stephenwilliams/go-clitools/master/tools.schema.json",
+  "name": "GoReleaser",
+  "description": "Deliver Go binaries as fast and easily as possible",
+  "executableName": "goreleaser",
+  "package": "goreleaser",
+  "exportedName": "GoReleaser",
+  "versionProvider": {
+    "commandArgs": ["--version"],
+    "selector": {
+      "splitLine": {
+        "index": 0
+      },
+      "splitString": {
+        "index": 2
+      }
+    }
+  },
+  "groups": [
+    {
+      "package": "@",
+      "description": "",
+      "commands": [
+        {
+          "name": "build",
+          "description": "Builds the current project",
+          "exportedName": "Build",
+          "subCommandPath": ["build"],
+          "options": [
+            {
+              "name": "skipPostHooks",
+              "exportedName": "SkipPostHooks",
+              "type": "boolean",
+              "description": "Skips all post-build hooks",
+              "noValue": true,
+              "format": ["--skip-post-hooks"]
+            },
+            {
+              "name": "skipValidate",
+              "exportedName": "SkipValidate",
+              "type": "boolean",
+              "description": "Skips several sanity checks",
+              "noValue": true,
+              "format": ["--skip-validate"]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "config"
+            },
+            {
+              "name": "build"
+            }
+          ]
+        },
+        {
+          "name": "check",
+          "description": "Checks if configuration is valid",
+          "exportedName": "Check",
+          "subCommandPath": ["check"],
+          "optionSets": [
+            {
+              "name": "config"
+            }
+          ]
+        },
+        {
+          "name": "init",
+          "description": "Generates a .goreleaser.yml file",
+          "exportedName": "Init",
+          "subCommandPath": ["init"],
+          "optionSets": [
+            {
+              "name": "config"
+            }
+          ]
+        },
+        {
+          "name": "release",
+          "description": "",
+          "exportedName": "Release",
+          "subCommandPath": ["release"],
+          "options": [
+            {
+              "name": "releaseFooter",
+              "exportedName": "ReleaseFooter",
+              "type": "string",
+              "description": "Load custom release notes footer from a markdown file",
+              "format": ["--release-footer","%s"]
+            },
+            {
+              "name": "releaseHeader",
+              "exportedName": "ReleaseHeader",
+              "type": "string",
+              "description": "Load custom release notes header from a markdown file",
+              "format": ["--release-header","%s"]
+            },
+            {
+              "name": "releaseNotes",
+              "exportedName": "ReleaseNotes",
+              "type": "string",
+              "description": "Load custom release notes from a markdown file",
+              "format": ["--release-notes","%s"]
+            },
+            {
+              "name": "skipPublish",
+              "exportedName": "SkipPublish",
+              "type": "boolean",
+              "description": "Skips publishing artifacts",
+              "noValue": true,
+              "format": ["--skip-publish"]
+            },
+            {
+              "name": "skipSign",
+              "exportedName": "SkipSign",
+              "type": "boolean",
+              "description": "Skips signing the artifacts",
+              "noValue": true,
+              "format": ["--skip-sign"]
+            },
+            {
+              "name": "skipValidate",
+              "exportedName": "SkipValidate",
+              "type": "boolean",
+              "description": "Skips several sanity checks",
+              "noValue": true,
+              "format": ["--skip-validate"]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "config"
+            },
+            {
+              "name": "build"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "optionSets": [
+    {
+      "name": "config",
+      "options": [
+        {
+          "name": "config",
+          "exportedName": "Config",
+          "type": "string",
+          "description": "Load configuration from file",
+          "format": ["--config","%s"]
+        }
+      ]
+    },
+    {
+      "name": "build",
+      "options": [
+        {
+          "name": "parallelism",
+          "exportedName": "Parallelism",
+          "type": "int",
+          "description": "Amount tasks to run concurrently\n\n defaults to the number of logical CPUs usable by the current process",
+          "format": ["--parallelism","%d"]
+        },
+        {
+          "name": "removeDist",
+          "exportedName": "RemoveDist",
+          "type": "boolean",
+          "description": "Remove the dist folder before building",
+          "noValue": true,
+          "format": ["--rm-dist"]
+        },
+        {
+          "name": "snapshot",
+          "exportedName": "Snapshot",
+          "type": "boolean",
+          "description": "Generate an unversioned snapshot build, skipping all validations and without publishing any artifacts",
+          "noValue": true,
+          "format": ["--snapshot"]
+        },
+        {
+          "name": "timeout",
+          "exportedName": "Timeout",
+          "type": "duration",
+          "description": "Timeout to the entire build process (default 30m0s)",
+          "noValue": false,
+          "format": ["--timeout","%s"]
+        }
+      ]
+    }
+  ]
+}

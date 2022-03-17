@@ -1,0 +1,143 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stephenwilliams/go-clitools/master/tools.schema.json",
+  "name": "Semantic Version Util",
+  "description": "Semantic Version Util is a tool to manage semantic versions at ease!",
+  "executableName": "svu",
+  "package": "svu",
+  "exportedName": "SVU",
+  "versionProvider": {
+    "commandArgs": ["--version"],
+    "captureStderr": true,
+    "selector": {
+      "splitLine": {
+        "index": 0
+      },
+      "splitString": {
+        "index": 2
+      }
+    }
+  },
+  "downloaders": {
+    "githubRelease": {
+      "owner": "caarlos0",
+      "repository": "svu",
+      "tagPrefix": "v",
+      "assetSelector": "svu_{{trimPrefix \"v\" .Version}}_{{.OS}}_{{.Arch}}.tar.gz",
+      "archived": true,
+      "archivePath": "svu"
+    }
+  },
+  "defaultToolProvider": {
+    "chain": {
+      "providers": [
+        {
+          "path": true
+        },
+        {
+          "downloader": {
+            "downloader": "GithubReleaseDownloader"
+          }
+        }
+      ]
+    }
+  },
+  "groups": [
+    {
+      "package": "@",
+      "description": "",
+      "commands": [
+        {
+          "name": "next",
+          "description": "prints the next version based on the git log",
+          "exportedName": "Next",
+          "subCommandPath": ["next"],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ]
+        },
+        {
+          "name": "major",
+          "description": "new major version",
+          "exportedName": "Major",
+          "subCommandPath": ["major"],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ]
+        },
+        {
+          "name": "minor",
+          "description": "new minor version",
+          "exportedName": "Minor",
+          "subCommandPath": ["minor"],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ]
+        },
+        {
+          "name": "patch",
+          "description": "new patch version",
+          "exportedName": "Patch",
+          "subCommandPath": ["patch"],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ]
+        },
+        {
+          "name": "current",
+          "description": "prints current version",
+          "exportedName": "Current",
+          "subCommandPath": ["current"],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "optionSets": [
+    {
+      "name": "base",
+      "description": "",
+      "options": [
+        {
+          "name": "metadata",
+          "exportedName": "Metadata",
+          "type": "boolean",
+          "description": "discards pre-release and build metadata if set to false",
+          "format": ["--metadata", "%t"]
+        },
+        {
+          "name": "preRelease",
+          "exportedName": "PreRelease",
+          "type": "boolean",
+          "description": "discards pre-release metadata if set to false",
+          "format": ["--pre-release", "%t"]
+        },
+        {
+          "name": "build",
+          "exportedName": "Build",
+          "type": "boolean",
+          "description": "discards build metadata if set to false",
+          "format": ["--build", "%t"]
+        },
+        {
+          "name": "tagMode",
+          "exportedName": "TagMode",
+          "type": "string",
+          "description": "determines if latest tag of the current or all branches will be used",
+          "format": ["--tag-mode", "%s"]
+        }
+      ]
+    }
+  ]
+}

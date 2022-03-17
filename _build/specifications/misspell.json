@@ -1,0 +1,112 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stephenwilliams/go-clitools/master/tools.schema.json",
+  "name": "misspell",
+  "description": "Correct commonly misspelled English words... quickly.",
+  "executableName": "misspell",
+  "package": "misspell",
+  "exportedName": "Misspell",
+  "versionProvider": {
+    "commandArgs": ["-v"],
+    "selector": {
+      "equalsReplace": {
+        "old": "dev",
+        "new": "0.0.0-dev"
+      }
+    }
+  },
+  "groups": [
+    {
+      "package": "@",
+      "description": "",
+      "commands": [
+        {
+          "name": "misspell",
+          "exportedName": "Misspell",
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": [
+                {
+                  "name": "files",
+                  "type": "stringSlice",
+                  "excludeDefaultValue": true
+                }
+              ]
+            }
+          ],
+          "options": [
+            {
+              "name": "debug",
+              "exportedName": "Debug",
+              "description": "Debug matching, very slow",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-debug"]
+            },
+            {
+              "name": "error",
+              "exportedName": "Error",
+              "description": "Exit with 2 if misspelling found",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-error"]
+            },
+            {
+              "name": "format",
+              "exportedName": "Format",
+              "description": "'csv', 'sqlite3' or custom Golang template for output",
+              "type": "string",
+              "format": ["-f","%s"],
+              "valueJoin": ","
+            },
+            {
+              "name": "ignoredCorrections",
+              "exportedName": "IgnoredCorrections",
+              "description": "ignore the following corrections",
+              "type": "stringSlice",
+              "format": ["-f","%s"],
+              "valueJoin": ","
+            },
+            {
+              "name": "workers",
+              "exportedName": "Workers",
+              "description": "Number of workers, 0 = number of CPUs",
+              "type": "int",
+              "format": ["-j","%v"]
+            },
+            {
+              "name": "locale",
+              "exportedName": "Locale",
+              "description": "Correct spellings using locale preferences for US or UK.\nDefault is to use a neutral variety of English.\nSetting locale to US will correct the British spelling of 'colour' to 'color'",
+              "type": "string",
+              "format": ["-locale", "%v"]
+            },
+            {
+              "name": "output",
+              "exportedName": "Output",
+              "description": "output file or [stderr|stdout|] (default 'stdout')",
+              "type": "string",
+              "format": ["-o","%s"]
+            },
+            {
+              "name": "source",
+              "exportedName": "Source",
+              "description": "Source mode: auto=guess, go=golang source, text=plain or markdown-like text (default \"auto\")",
+              "type": "string",
+              "format": ["-source","%s"]
+            },
+            {
+              "name": "write",
+              "exportedName": "Write",
+              "description": "Overwrite file with corrections (default is just to display)",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-w"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

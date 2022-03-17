@@ -1,0 +1,1005 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stephenwilliams/go-clitools/master/tools.schema.json",
+  "name": "k3d",
+  "description": "k3d is a wrapper CLI that helps you to easily create k3s clusters inside docker. Nodes of a k3d cluster are docker containers running a k3s image. All Nodes of a k3d cluster are part of the same docker network.",
+  "executableName": "k3d",
+  "package": "k3d",
+  "exportedName": "K3d",
+  "versionProvider": {
+    "commandArgs": ["version"],
+    "selector": {
+      "splitLine": {
+        "index": 0
+      },
+      "splitString": {
+        "index": 2
+      }
+    }
+  },
+  "downloaders": {
+    "githubRelease": {
+      "owner": "rancher",
+      "repository": "k3d",
+      "tagPrefix": "v",
+      "assetSelector": "k3d-{{.OS}}-{{.Arch}}",
+      "archived": false
+    }
+  },
+  "defaultToolProvider": {
+    "chain": {
+      "providers": [
+        {
+          "path": true
+        },
+        {
+          "downloader": {
+            "downloader": "GithubReleaseDownloader"
+          }
+        }
+      ]
+    }
+  },
+  "groups": [
+    {
+      "package": "cluster",
+      "description": "Manage cluster(s)",
+      "commands": [
+        {
+          "name": "create",
+          "description": "Create a new k3s cluster with containerized nodes (k3s in docker). Every cluster will consist of one or more containers: - 1 (or more) server node container (k3s) - (optionally) 1 loadbalancer container as the entrypoint to the cluster (nginx) - (optionally) 1 (or more) agent node containers (k3s)",
+          "exportedName": "Create",
+          "subCommandPath": ["cluster", "create"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": [
+                {
+                  "name": "name",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ],
+          "options": [
+            {
+              "name": "agents",
+              "exportedName": "Agents",
+              "description": "Specify how many agents you want to create",
+              "type": "int",
+              "format": ["--agents", "%d"]
+            },
+            {
+              "name": "agentsMemory",
+              "exportedName": "AgentsMemory",
+              "description": "Memory limit imposed on the agents nodes [From docker]",
+              "type": "string",
+              "format": ["--agents-memory", "%s"]
+            },
+            {
+              "name": "apiPort",
+              "exportedName": "APIPort",
+              "description": "Specify the Kubernetes API server port exposed on the LoadBalancer (Format: [HOST:]HOSTPORT)",
+              "type": "string",
+              "format": ["--api-port", "%s"]
+            },
+            {
+              "name": "config",
+              "exportedName": "Config",
+              "description": "Path of a config file to use",
+              "type": "string",
+              "format": ["--config", "%s"]
+            },
+            {
+              "name": "env",
+              "exportedName": "Env",
+              "description": "Add environment variables to nodes (Format: KEY[=VALUE][@NODEFILTER[;NODEFILTER...]]",
+              "type": "stringSlice",
+              "format": ["--env", "%s"],
+              "repeated": true
+            },
+            {
+              "name": "gpus",
+              "exportedName": "GPUs",
+              "description": "GPU devices to add to the cluster node containers ('all' to pass all GPUs) [From docker]",
+              "type": "string",
+              "format": ["--gpus", "%s"]
+            },
+            {
+              "name": "image",
+              "exportedName": "Image",
+              "description": "Specify k3s image that you want to use for the nodes",
+              "type": "string",
+              "format": ["--image", "%s"]
+            },
+            {
+              "name": "k3sAgentArgs",
+              "exportedName": "K3sAgentArgs",
+              "description": "Additional args passed to the k3s agent command on agent nodes",
+              "type": "stringSlice",
+              "format": ["--k3s-agent-arg", "%s"],
+              "repeated": true
+            },
+            {
+              "name": "k3sServerArgs",
+              "exportedName": "K3sServerArgs",
+              "description": "Additional args passed to the k3s server command on server nodes",
+              "type": "stringSlice",
+              "format": ["--k3s-server-arg", "%s"],
+              "repeated": true
+            },
+            {
+              "name": "KubeconfigSwitchContext",
+              "exportedName": "KubeconfigSwitchContext",
+              "description": "Directly switch the default kubeconfig's current-context to the new cluster's context (requires --kubeconfig-update-default) (default true)",
+              "type": "boolean",
+              "format": ["--kubeconfig-switch-context", "%t"]
+            },
+            {
+              "name": "kubeconfigUpdateDefault",
+              "exportedName": "KubeconfigUpdateDefault",
+              "description": "Directly update the default kubeconfig with the new cluster's context (default true)",
+              "type": "boolean",
+              "format": ["--kubeconfig-update-default", "%t"]
+            },
+            {
+              "name": "labels",
+              "exportedName": "Labels",
+              "description": "Add label to node container (Format: KEY[=VALUE][@NODEFILTER[;NODEFILTER...]]",
+              "type": "stringSlice",
+              "format": ["--label", "%s"],
+              "repeated": true
+            },
+            {
+              "name": "network",
+              "exportedName": "Network",
+              "description": "Join an existing network",
+              "type": "string",
+              "format": ["--network", "%s"]
+            },
+            {
+              "name": "noHostIP",
+              "exportedName": "NoHostIP",
+              "description": "Disable the automatic injection of the Host IP as 'host.k3d.internal' into the containers and CoreDNS",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--no-hostip"]
+            },
+            {
+              "name": "noImageVolume",
+              "exportedName": "NoImageVolume",
+              "description": "Disable the creation of a volume for importing images",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--no-image-volume"]
+            },
+            {
+              "name": "noLB",
+              "exportedName": "NoLoadBalancer",
+              "description": "Disable the creation of a LoadBalancer in front of the server nodes",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--no-lb"]
+            },
+            {
+              "name": "noRollback",
+              "exportedName": "NoRollback",
+              "description": "Disable the automatic rollback actions, if anything goes wrong",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--no-rollback"]
+            },
+            {
+              "name": "port",
+              "exportedName": "Port",
+              "description": "Map ports from the node containers to the host (Format: [HOST:][HOSTPORT:]CONTAINERPORT[/PROTOCOL][@NODEFILTER])",
+              "type": "string",
+              "repeated": true,
+              "format": ["--port", "%s"]
+            },
+            {
+              "name": "registryConfig",
+              "exportedName": "RegistryConfig",
+              "description": "Specify path to an extra registries.yaml file",
+              "type": "string",
+              "format": ["--registry-config", "%s"]
+            },
+            {
+              "name": "registryCreate",
+              "exportedName": "RegistryCreate",
+              "description": "Create a k3d-managed registry and connect it to the cluster",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--registry-create"]
+            },
+            {
+              "name": "registryUse",
+              "exportedName": "RegistryUse",
+              "description": "Connect to one or more k3d-managed registries running locally",
+              "type": "stringSlice",
+              "valueJoin": ",",
+              "format": ["--registry-use", "%s"]
+            },
+            {
+              "name": "servers",
+              "exportedName": "Servers",
+              "description": "Specify how many servers you want to create",
+              "type": "int",
+              "format": ["--servers", "%d"]
+            },
+            {
+              "name": "serversMemory",
+              "exportedName": "ServersMemory",
+              "description": "Memory limit imposed on the server nodes [From docker]",
+              "type": "string",
+              "format": ["--servers-memory", "%s"]
+            },
+            {
+              "name": "subnet",
+              "exportedName": "Subnet",
+              "description": "[Experimental: IPAM] Define a subnet for the newly created container network (Example: 172.28.0.0/16)",
+              "type": "string",
+              "format": ["--subnet", "%s"]
+            },
+            {
+              "name": "timeout",
+              "exportedName": "Timeout",
+              "description": "Rollback changes if cluster couldn't be created in specified duration.",
+              "type": "duration",
+              "format": ["--timeout", "%v"]
+            },
+            {
+              "name": "volume",
+              "exportedName": "Volume",
+              "description": "Mount volumes into the nodes (Format: [SOURCE:]DEST[@NODEFILTER[;NODEFILTER...]]",
+              "type": "stringSlice",
+              "repeated": true,
+              "format": ["--volume", "%s"]
+            },
+            {
+              "name": "wait",
+              "exportedName": "Wait",
+              "description": "Wait for the server(s) to be ready before returning. Use '--timeout DURATION' to not wait forever. (default true)",
+              "type": "boolean",
+              "format": ["--wait", "%t"]
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "description": "Delete cluster(s).",
+          "exportedName": "Delete",
+          "subCommandPath": ["cluster", "delete"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withName",
+              "exportedNameSuffix": "WithName",
+              "args": [
+                {
+                  "name": "name",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "withNames",
+              "exportedNameSuffix": "WithNames",
+              "args": [
+                {
+                  "name": "names",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ],
+          "options": [
+            {
+              "name": "all",
+              "exportedName": "All",
+              "description": "Delete all existing clusters",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--all"]
+            }
+          ]
+        },
+        {
+          "name": "start",
+          "description": "Start existing k3d cluster(s)",
+          "exportedName": "Start",
+          "subCommandPath": ["cluster","start"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withName",
+              "exportedNameSuffix": "WithName",
+              "args": [
+                {
+                  "name": "name",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "withNames",
+              "exportedNameSuffix": "WithNames",
+              "args": [
+                {
+                  "name": "names",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ],
+          "options": [
+            {
+              "name": "all",
+              "exportedName": "All",
+              "description": "Delete all existing clusters",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--all"]
+            },
+            {
+              "name": "timeout",
+              "exportedName": "Timeout",
+              "description": "Maximum waiting time for '--wait' before canceling/returning.",
+              "type": "duration",
+              "format": ["--timeout", "%v"]
+            },
+            {
+              "name": "wait",
+              "exportedName": "Wait",
+              "description": "Wait for the server(s) (and loadbalancer) to be ready before returning. (default true)",
+              "type": "boolean",
+              "format": ["--wait", "%t"]
+            }
+          ]
+        },
+        {
+          "name": "stop",
+          "description": "Stop existing k3d cluster(s).",
+          "exportedName": "Stop",
+          "subCommandPath": ["cluster", "stop"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withName",
+              "exportedNameSuffix": "WithName",
+              "args": [
+                {
+                  "name": "name",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "withNames",
+              "exportedNameSuffix": "WithNames",
+              "args": [
+                {
+                  "name": "names",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ],
+          "options": [
+            {
+              "name": "all",
+              "exportedName": "All",
+              "description": "Stops all existing clusters",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--all"]
+            }
+          ]
+        },
+        {
+          "name": "list",
+          "exportedName": "List",
+          "description": "List cluster(s)",
+          "subCommandPath": ["cluster", "list"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "description": "",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withName",
+              "description": "",
+              "exportedNameSuffix": "WithName",
+              "args": [
+                {
+                  "name": "name",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "withNames",
+              "description": "",
+              "exportedNameSuffix": "WithNames",
+              "args": [
+                {
+                  "name": "names",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ],
+          "options": [
+            {
+              "name": "noHeaders",
+              "exportedName": "NoHeaders",
+              "description": "Disable headers",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--no-headers"]
+            },
+            {
+              "name": "output",
+              "exportedName": "Output",
+              "description": "Output format. One of: json|yaml",
+              "type": "string",
+              "format": ["--output", "%s"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": "config",
+      "description": "Work with config file(s)",
+      "commands": [
+        {
+          "name": "init",
+          "description": "",
+          "exportedName": "Init",
+          "subCommandPath": ["config", "init"],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ],
+          "options": [
+            {
+              "name": "force",
+              "exportedName": "Force",
+              "description": "Force overwrite of target file",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--force"]
+            },
+            {
+              "name": "output",
+              "exportedName": "Output",
+              "description": "Write a default k3d config (default \"k3d-default.yaml\")",
+              "type": "string",
+              "noValue": true,
+              "format": ["--output", "%s"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": "image",
+      "description": "Handle container images.",
+      "commands": [
+        {
+          "name": "import",
+          "exportedName": "Import",
+          "description": "Import image(s) from docker into k3d cluster(s).\n\nIf an IMAGE starts with the prefix ‘docker.io/’, then this prefix is stripped internally. That is, ‘docker.io/rancher/k3d-tools:latest’ is treated as ‘rancher/k3d-tools:latest’.\n\nIf an IMAGE starts with the prefix ‘library/’ (or ‘docker.io/library/’), then this prefix is stripped internally. That is, ‘library/busybox:latest’ (or ‘docker.io/library/busybox:latest’) are treated as ‘busybox:latest’.\n\nIf an IMAGE does not have a version tag, then ‘:latest’ is assumed. That is, ‘rancher/k3d-tools’ is treated as ‘rancher/k3d-tools:latest’.\n\nA file ARCHIVE always takes precedence. So if a file ‘./rancher/k3d-tools’ exists, k3d will try to import it instead of the IMAGE of the same name.",
+          "subCommandPath": ["image", "import"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": [
+                {
+                  "name": "imageOrArchive",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "withImagesOrArchives",
+              "exportedNameSuffix": "WithImagesOrArchives",
+              "args": [
+                {
+                  "name": "imagesOrArchives",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ],
+          "options": [
+            {
+              "name": "cluster",
+              "exportedName": "Cluster",
+              "description": "Select clusters to load the image to. (default [k3s-default])",
+              "type": "stringSlice",
+              "valueJoin": ",",
+              "format": ["--cluster", "%s"]
+            },
+            {
+              "name": "keepTarball",
+              "exportedName": "KeepTarball",
+              "description": "Do not delete the tarball containing the saved images from the shared volume",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--keep-tarball"]
+            },
+            {
+              "name": "keepTools",
+              "exportedName": "KeepTools",
+              "description": "Do not delete the tools node after import",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--keep-tools"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": "kubeconfig",
+      "description": "Manage kubeconfig(s)",
+      "commands": [
+        {
+          "name": "get",
+          "exportedName": "Get",
+          "description": "Print kubeconfig(s) from cluster(s).",
+          "subCommandPath": ["kubeconfig", "get"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "description": "",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withCluster",
+              "description": "",
+              "exportedNameSuffix": "WithCluster",
+              "args": [
+                {
+                  "name": "cluster",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "withClusters",
+              "description": "",
+              "exportedNameSuffix": "WithClusters",
+              "args": [
+                {
+                  "name": "clusters",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ],
+          "options": [
+            {
+              "name": "all",
+              "exportedName": "All",
+              "description": "Output kubeconfigs from all existing clusters",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--all"]
+            }
+          ]
+        },
+        {
+          "name": "merge",
+          "exportedName": "Merge",
+          "description": "Print kubeconfig(s) from cluster(s).",
+          "subCommandPath": ["kubeconfig", "merge"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "description": "",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withCluster",
+              "description": "",
+              "exportedNameSuffix": "WithCluster",
+              "args": [
+                {
+                  "name": "cluster",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "withClusters",
+              "description": "",
+              "exportedNameSuffix": "WithClusters",
+              "args": [
+                {
+                  "name": "clusters",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ],
+          "options": [
+            {
+              "name": "all",
+              "exportedName": "All",
+              "description": "Get kubeconfigs from all existing clusters",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--all"]
+            },
+            {
+              "name": "kubeconfigMergeDefault",
+              "exportedName": "KubeconfigMergeDefault",
+              "description": "Merge into the default kubeconfig ($KUBECONFIG or ~/.kube/config)",
+              "type": "boolean",
+              "format": ["--kubeconfig-merge-default", "%t"]
+            },
+            {
+              "name": "kubeconfigSwitchContext",
+              "exportedName": "KubeconfigSwitchContext",
+              "description": "Switch to new context (default true)",
+              "type": "boolean",
+              "format": ["--kubeconfig-switch-context", "%t"]
+            },
+            {
+              "name": "output",
+              "exportedName": "Output",
+              "description": "Define output [ - | FILE ] (default from $KUBECONFIG or ~/.kube/config)",
+              "type": "string",
+              "format": ["--output", "%s"]
+            },
+            {
+              "name": "overwrite",
+              "exportedName": "Overwrite",
+              "description": "[Careful!] Overwrite existing file, ignoring its contents",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--overwrite"]
+            },
+            {
+              "name": "update",
+              "exportedName": "Update",
+              "description": "Update conflicting fields in existing kubeconfig (default true)",
+              "type": "boolean",
+              "format": ["--update", "%t"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": "node",
+      "description": "Manage node(s)",
+      "commands": [
+        {
+          "name": "create",
+          "exportedName": "Create",
+          "description": "Create a new k3s node in docker",
+          "subCommandPath": ["node", "create"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "description": "",
+              "exportedNameSuffix": "",
+              "args": [
+                {
+                  "name": "name",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ],
+          "options": [
+            {
+              "name": "cluster",
+              "exportedName": "Cluster",
+              "description": "Select the cluster that the node shall connect to. (default \"k3s-default\")",
+              "type": "string",
+              "format": ["--cluster", "%s"]
+            },
+            {
+              "name": "image",
+              "exportedName": "Image",
+              "description": "Specify k3s image used for the node(s) (default \"docker.io/rancher/k3s:v1.20.0-k3s2\")",
+              "type": "string",
+              "format": ["--image", "%s"]
+            },
+            {
+              "name": "memory",
+              "exportedName": "Memory",
+              "description": "Memory limit imposed on the node [From docker]",
+              "type": "string",
+              "format": ["--memory", "%s"]
+            },
+            {
+              "name": "replicas",
+              "exportedName": "Replicas",
+              "description": "Number of replicas of this node specification. (default 1)",
+              "type": "int",
+              "format": ["--replicas", "%d"]
+            },
+            {
+              "name": "role",
+              "exportedName": "Role",
+              "description": "Specify node role [server, agent] (default \"agent\")",
+              "type": "string",
+              "format": ["--role", "%s"]
+            },
+            {
+              "name": "timeout",
+              "exportedName": "Timeout",
+              "description": "Maximum waiting time for '--wait' before canceling/returning.",
+              "type": "duration",
+              "format": ["--timeout", "%v"]
+            },
+            {
+              "name": "wait",
+              "exportedName": "Wait",
+              "description": "Wait for the node(s) to be ready before returning. (default true)",
+              "type": "boolean",
+              "format": ["--wait", "%t"]
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "exportedName": "Delete",
+          "description": "Delete node(s).",
+          "subCommandPath": ["node", "delete"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "description": "",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withName",
+              "description": "",
+              "exportedNameSuffix": "WithName",
+              "args": [
+                {
+                  "name": "name",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ],
+          "options": [
+            {
+              "name": "all",
+              "exportedName": "All",
+              "description": "Delete all existing nodes",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--all"]
+            },
+            {
+              "name": "registries",
+              "exportedName": "Registries",
+              "description": "Also delete registries",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--registries"]
+            }
+          ]
+        },
+        {
+          "name": "start",
+          "exportedName": "Start",
+          "description": "Start an existing k3d node",
+          "subCommandPath": ["node", "start"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "description": "",
+              "exportedNameSuffix": "",
+              "args": [
+                {
+                  "name": "name",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ],
+          "options": []
+        },
+        {
+          "name": "stop",
+          "exportedName": "Stop",
+          "description": "Stop an existing k3d node",
+          "subCommandPath": ["node", "stop"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "description": "",
+              "exportedNameSuffix": "",
+              "args": [
+                {
+                  "name": "name",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ],
+          "options": []
+        },
+        {
+          "name": "list",
+          "exportedName": "List",
+          "description": "List node(s)",
+          "subCommandPath": ["node", "list"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "description": "",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withName",
+              "description": "",
+              "exportedNameSuffix": "WithName",
+              "args": [
+                {
+                  "name": "name",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "withNames",
+              "description": "",
+              "exportedNameSuffix": "WithNames",
+              "args": [
+                {
+                  "name": "names",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "base"
+            }
+          ],
+          "options": [
+            {
+              "name": "noHeaders",
+              "exportedName": "NoHeaders",
+              "description": "Disable headers",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["--no-headers"]
+            },
+            {
+              "name": "output",
+              "exportedName": "Output",
+              "description": "Output format. One of: json|yaml",
+              "type": "string",
+              "format": ["--output", "%s"]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "optionSets": [
+    {
+      "name": "base",
+      "description": "The base options set",
+      "options": [
+        {
+          "name": "timestamps",
+          "exportedName": "Timestamps",
+          "type": "boolean",
+          "description": "Enable Log timestamps",
+          "noValue": true,
+          "format": ["--timestamps"]
+        },
+        {
+          "name": "trace",
+          "exportedName": "Trace",
+          "type": "boolean",
+          "description": "Enable super verbose output (trace logging)",
+          "noValue": true,
+          "format": ["--trace"]
+        },
+        {
+          "name": "verbose",
+          "exportedName": "Verbose",
+          "description": "Enable verbose output (debug logging)",
+          "type": "boolean",
+          "noValue": true,
+          "format": ["--verbose"]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1142 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stephenwilliams/go-clitools/master/tools.schema.json",
+  "name": "Go",
+  "description": "Go is a tool for managing go source code.",
+  "executableName": "go",
+  "package": "golang",
+  "exportedName": "Go",
+  "versionProvider": {
+    "commandArgs": ["version"],
+    "selector": {
+      "splitString": {
+        "index": 2
+      },
+      "trimPrefix": "go"
+    }
+  },
+  "groups": [
+    {
+      "package": "@",
+      "description": "",
+      "commands": [
+        {
+          "name": "build",
+          "description": "",
+          "exportedName": "Build",
+          "subCommandPath": ["build"],
+          "argsFirst": false,
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withPackage",
+              "exportedNameSuffix": "WithPackage",
+              "args": [
+                {
+                  "name": "pkg",
+                  "description": "package to build",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "withPackages",
+              "exportedNameSuffix": "WithPackages",
+              "args": [
+                {
+                  "name": "packages",
+                  "description": "packages to build",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "options": [
+            {
+              "name": "output",
+              "exportedName": "Output",
+              "description": "forces build to write the resulting executable or object\nto the named output file or directory, instead of the default behavior described\nin the last two paragraphs. If the named output is a directory that exists,\nthen any resulting executables will be written to that directory.",
+              "type": "string",
+              "format": ["-o", "%s"]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "build"
+            },
+            {
+              "name": "printCommands"
+            }
+          ]
+        },
+        {
+          "name": "clean",
+          "exportedName": "Clean",
+          "description": "Clean removes object files from package source directories.\nThe go command builds most objects in a temporary directory,\nso go clean is mainly concerned with object files left by other\ntools or by manual invocations of go build.\n\nIf a package argument is given or the -i or -r flag is set,\nclean removes the following files from each of the\nsource directories corresponding to the import paths:\n\n\t_obj/            old object directory, left from Makefiles\n\t_test/           old test directory, left from Makefiles\n\t_testmain.go     old gotest file, left from Makefiles\n\ttest.out         old test log, left from Makefiles\n\tbuild.out        old test log, left from Makefiles\n\t*.[568ao]        object files, left from Makefiles\n\n\tDIR(.exe)        from go build\n\tDIR.test(.exe)   from go test -c\n\tMAINFILE(.exe)   from go build MAINFILE.go\n\t*.so             from SWIG\n\nIn the list, DIR represents the final path element of the\ndirectory, and MAINFILE is the base name of any Go source\nfile in the directory that is not included when building\nthe package.",
+          "subCommandPath": ["clean"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withPackages",
+              "exportedNameSuffix": "WithPackages",
+              "args": [
+                {
+                  "name": "packages",
+                  "description": "packages to clean",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "options": [
+            {
+              "name": "installed",
+              "exportedName": "Installed",
+              "description": "causes clean to remove the corresponding installed\narchive or binary (what 'go install' would create).",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-i"]
+            },
+            {
+              "name": "recursive",
+              "exportedName": "Recursive",
+              "description": "causes clean to be applied recursively to all the\ndependencies of the packages named by the import paths.",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-r"]
+            },
+            {
+              "name": "cache",
+              "exportedName": "Cache",
+              "description": "flag causes clean to remove the entire go build cache.",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-cache"]
+            },
+            {
+              "name": "testcache",
+              "exportedName": "TestCache",
+              "description": "flag causes clean to expire all test results in the\ngo build cache.",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-testcache"]
+            },
+            {
+              "name": "modcache",
+              "exportedName": "ModCache",
+              "description": "causes clean to remove the entire module\ndownload cache, including unpacked source code of versioned\ndependencies.",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-modcache"]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "printCommands"
+            }
+          ]
+        },
+        {
+          "name": "env",
+          "description": "Env prints Go environment information.\n\nBy default env prints information as a shell script\n(on Windows, a batch file). If one or more variable\nnames is given as arguments, env prints the value of\neach named variable on its own line.",
+          "exportedName": "Env",
+          "subCommandPath": ["env"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withVars",
+              "exportedNameSuffix": "WithVars",
+              "args": [
+                {
+                  "name": "vars",
+                  "description": "variables to write or unset",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "options": [
+            {
+              "name": "json",
+              "exportedName": "JSON",
+              "type": "boolean",
+              "description": "prints the environment in JSON format\ninstead of as a shell script.",
+              "noValue": true,
+              "format": ["-json"]
+            },
+            {
+              "name": "unset",
+              "exportedName": "Unset",
+              "type": "boolean",
+              "description": "requires one or more arguments and unsets\nthe default setting for the named environment variables,\nif one has been set with 'go env -w'.",
+              "noValue": true,
+              "format": ["-u"]
+            },
+            {
+              "name": "write",
+              "exportedName": "Write",
+              "type": "boolean",
+              "description": "requires one or more arguments of the\nform NAME=VALUE and changes the default settings\nof the named environment variables to the given values.",
+              "noValue": true,
+              "format": ["-w"]
+            }
+          ]
+        },
+        {
+          "name": "fix",
+          "description": "usage: go fix [packages]\n\nFix runs the Go fix command on the packages named by the import paths.\n\nFor more about fix, see 'go doc cmd/fix'.\nFor more about specifying packages, see 'go help packages'.",
+          "exportedName": "Fix",
+          "subCommandPath": ["fix"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withPackages",
+              "exportedNameSuffix": "WithPackages",
+              "args": [
+                {
+                  "name": "packages",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "printCommands"
+            }
+          ]
+        },
+        {
+          "name": "fmt",
+          "description": "Fmt runs the command 'gofmt -l -w' on the packages named\nby the import paths. It prints the names of the files that are modified.\n\nFor more about gofmt, see 'go doc cmd/gofmt'.\nFor more about specifying packages, see 'go help packages'.",
+          "exportedName": "Fmt",
+          "subCommandPath": ["fmt"],
+          "package": "gofmt",
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": [
+                {
+                  "name": "pkg",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "withPackages",
+              "exportedNameSuffix": "withPackages",
+              "args": [
+                {
+                  "name": "pkgs",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "options": [
+            {
+              "name": "mod",
+              "exportedName": "Mod",
+              "type": "string",
+              "description": "sets which module download mode\nto use: readonly or vendor. See 'go help modules' for more.",
+              "format": ["-mod", "%s"]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "printCommands"
+            }
+          ]
+        },
+        {
+          "name": "generate",
+          "description": "Generate runs commands described by directives within existing\nfiles. Those commands can run any process but the intent is to\ncreate or update Go source files.\n\nGo generate is never run automatically by go build, go get, go test,\nand so on. It must be run explicitly.",
+          "exportedName": "Generate",
+          "subCommandPath": ["generate"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withPackage",
+              "exportedNameSuffix": "WithPackage",
+              "args": [
+                {
+                  "name": "pkg",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "withPackages",
+              "exportedNameSuffix": "WithPackages",
+              "args": [
+                {
+                  "name": "pkgs",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "options": [
+            {
+              "name": "run",
+              "exportedName": "Run",
+              "description": "if non-empty, specifies a regular expression to select\ndirectives whose full original source text (excluding\nany trailing spaces and final newline) matches the\nexpression.",
+              "type": "string",
+              "format": ["-run=\"%s\""]
+            },
+            {
+              "name": "verbose",
+              "exportedName": "Verbose",
+              "description": "print the names of packages as they are compiled.",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-v"]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "printCommands"
+            }
+          ]
+        },
+        {
+          "name": "get",
+          "description": "Get resolves and adds dependencies to the current development module\nand then builds and installs them.\n\nThe first step is to resolve which dependencies to add.\n\nFor each named package or package pattern, get must decide which version of\nthe corresponding module to use. By default, get looks up the latest tagged\nrelease version, such as v0.4.5 or v1.2.3. If there are no tagged release\nversions, get looks up the latest tagged pre-release version, such as\nv0.0.1-pre1. If there are no tagged versions at all, get looks up the latest\nknown commit. If the module is not already required at a later version\n(for example, a pre-release newer than the latest release), get will use\nthe version it looked up. Otherwise, get will use the currently\nrequired version.\n\nThis default version selection can be overridden by adding an @version\nsuffix to the package argument, as in 'go get golang.org/x/text@v0.3.0'.\nThe version may be a prefix: @v1 denotes the latest available version starting\nwith v1. See 'go help modules' under the heading 'Module queries' for the\nfull query syntax.\n\nFor modules stored in source control repositories, the version suffix can\nalso be a commit hash, branch identifier, or other syntax known to the\nsource control system, as in 'go get golang.org/x/text@master'. Note that\nbranches with names that overlap with other module query syntax cannot be\nselected explicitly. For example, the suffix @v2 means the latest version\nstarting with v2, not the branch named v2.\n\nIf a module under consideration is already a dependency of the current\ndevelopment module, then get will update the required version.\nSpecifying a version earlier than the current required version is valid and\ndowngrades the dependency. The version suffix @none indicates that the\ndependency should be removed entirely, downgrading or removing modules\ndepending on it as needed.\n\nThe version suffix @latest explicitly requests the latest minor release of the\nmodule named by the given path. The suffix @upgrade is like @latest but\nwill not downgrade a module if it is already required at a revision or\npre-release version newer than the latest released version. The suffix\n@patch requests the latest patch release: the latest released version\nwith the same major and minor version numbers as the currently required\nversion. Like @upgrade, @patch will not downgrade a module already required\nat a newer version. If the path is not already required, @upgrade and @patch\nare equivalent to @latest.\n\nAlthough get defaults to using the latest version of the module containing\na named package, it does not use the latest version of that module's\ndependencies. Instead it prefers to use the specific dependency versions\nrequested by that module. For example, if the latest A requires module\nB v1.2.3, while B v1.2.4 and v1.3.1 are also available, then 'go get A'\nwill use the latest A but then use B v1.2.3, as requested by A. (If there\nare competing requirements for a particular module, then 'go get' resolves\nthose requirements by taking the maximum requested version.)",
+          "exportedName": "Get",
+          "subCommandPath": ["get"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withPackage",
+              "exportedNameSuffix": "WithPackage",
+              "args": [
+                {
+                  "name": "pkg",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "withPackages",
+              "exportedNameSuffix": "WithPackages",
+              "args": [
+                {
+                  "name": "pkgs",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "options": [
+            {
+              "name": "test",
+              "exportedName": "Test",
+              "description": "instructs get to consider modules needed to build tests of\npackages specified on the command line.",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-t"]
+            },
+            {
+              "name": "update",
+              "exportedName": "Update",
+              "description": "instructs get to update modules providing dependencies\nof packages named on the command line to use newer minor or patch\nreleases when available. Continuing the previous example, 'go get -u A'\nwill use the latest A with B v1.3.1 (not B v1.2.3). If B requires module C,\nbut C does not provide any packages needed to build packages in A\n(not including tests), then C will not be updated.",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-u"]
+            },
+            {
+              "name": "updatePatch",
+              "exportedName": "UpdatePatch",
+              "description": "instructs get to update dependencies,\nbut changes the default to select patch releases.\nContinuing the previous example,\n'go get -u=patch A@latest' will use the latest A with B v1.2.4 (not B v1.2.3),\nwhile 'go get -u=patch A' will use a patch release of A instead.",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-u=patch"]
+            },
+            {
+              "name": "insecure",
+              "exportedName": "Insecure",
+              "description": "permits fetching from repositories and resolving\ncustom domains using insecure schemes such as HTTP. Use with caution. The\nGOINSECURE environment variable is usually a better alternative, since it\nprovides control over which modules may be retrieved using an insecure scheme.\nSee 'go help environment' for details.",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-insecure"]
+            },
+            {
+              "name": "download",
+              "exportedName": "Download",
+              "description": "instructs get to download the source code needed to build\nthe named packages, including downloading necessary dependencies,\nbut not to build and install them.",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-d"]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "build"
+            }
+          ]
+        },
+        {
+          "name": "install",
+          "description": "Install compiles and installs the packages named by the import paths.\n\nExecutables are installed in the directory named by the GOBIN environment\nvariable, which defaults to $GOPATH/bin or $HOME/go/bin if the GOPATH\nenvironment variable is not set. Executables in $GOROOT\nare installed in $GOROOT/bin or $GOTOOLDIR instead of $GOBIN.\n\nWhen module-aware mode is disabled, other packages are installed in the\ndirectory $GOPATH/pkg/$GOOS_$GOARCH. When module-aware mode is enabled,\nother packages are built and cached but not",
+          "exportedName": "Install",
+          "subCommandPath": ["install"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withPackage",
+              "exportedNameSuffix": "WithPackage",
+              "args": [
+                {
+                  "name": "pkg",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "withPackages",
+              "exportedNameSuffix": "WithPackages",
+              "args": [
+                {
+                  "name": "pkgs",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "options": [
+            {
+              "name": "installDependencies",
+              "exportedName": "InstallDependencies",
+              "type": "boolean",
+              "description": "installs the dependencies of the named packages as well.",
+              "noValue": true,
+              "format": ["-i"]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "build"
+            },
+            {
+              "name": "printCommands"
+            }
+          ]
+        },
+        {
+          "name": "list",
+          "description": "List lists the named packages, one per line.\nThe most commonly-used flags are -f and -json, which control the form\nof the output printed for each package. Other list flags, documented below,\ncontrol more specific details.\n\nThe default output shows the package import path:\n\n    bytes\n    encoding/json\n    github.com/gorilla/mux\n    golang.org/x/net/html",
+          "exportedName": "List",
+          "subCommandPath": ["list"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withPackage",
+              "exportedNameSuffix": "WithPackage",
+              "args": [
+                {
+                  "name": "pkg",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "withPackages",
+              "exportedNameSuffix": "WithPackages",
+              "args": [
+                {
+                  "name": "pkgs",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "options": [
+            {
+              "name": "format",
+              "exportedName": "Format",
+              "type": "string",
+              "description": "The -f flag specifies an alternate format for the list, using the\nsyntax of package template. The default output is equivalent\nto -f '{{.ImportPath}}'. The struct being passed to the template is:\n\n    type Package struct {\n        Dir           string   // directory containing package sources\n        ImportPath    string   // import path of package in dir\n        ImportComment string   // path in import comment on package statement\n        Name          string   // package name\n        Doc           string   // package documentation string\n        Target        string   // install path\n        Shlib         string   // the shared library that contains this package (only set when -linkshared)\n        Goroot        bool     // is this package in the Go root?\n        Standard      bool     // is this package part of the standard Go library?\n        Stale         bool     // would 'go install' do anything for this package?\n        StaleReason   string   // explanation for Stale==true\n        Root          string   // Go root or Go path dir containing this package\n        ConflictDir   string   // this directory shadows Dir in $GOPATH\n        BinaryOnly    bool     // binary-only package (no longer supported)\n        ForTest       string   // package is only for use in named test\n        Export        string   // file containing export data (when using -export)\n        Module        *Module  // info about package's containing module, if any (can be nil)\n        Match         []string // command-line patterns matching this package\n        DepOnly       bool     // package is only a dependency, not explicitly listed\n\n        // Source files\n        GoFiles         []string // .go source files (excluding CgoFiles, TestGoFiles, XTestGoFiles)\n        CgoFiles        []string // .go source files that import \"C\"\n        CompiledGoFiles []string // .go files presented to compiler (when using -compiled)\n        IgnoredGoFiles  []string // .go source files ignored due to build constraints\n        CFiles          []string // .c source files\n        CXXFiles        []string // .cc, .cxx and .cpp source files\n        MFiles          []string // .m source files\n        HFiles          []string // .h, .hh, .hpp and .hxx source files\n        FFiles          []string // .f, .F, .for and .f90 Fortran source files\n        SFiles          []string // .s source files\n        SwigFiles       []string // .swig files\n        SwigCXXFiles    []string // .swigcxx files\n        SysoFiles       []string // .syso object files to add to archive\n        TestGoFiles     []string // _test.go files in package\n        XTestGoFiles    []string // _test.go files outside package\n\n        // Cgo directives\n        CgoCFLAGS    []string // cgo: flags for C compiler\n        CgoCPPFLAGS  []string // cgo: flags for C preprocessor\n        CgoCXXFLAGS  []string // cgo: flags for C++ compiler\n        CgoFFLAGS    []string // cgo: flags for Fortran compiler\n        CgoLDFLAGS   []string // cgo: flags for linker\n        CgoPkgConfig []string // cgo: pkg-config names\n\n        // Dependency information\n        Imports      []string          // import paths used by this package\n        ImportMap    map[string]string // map from source import to ImportPath (identity entries omitted)\n        Deps         []string          // all (recursively) imported dependencies\n        TestImports  []string          // imports from TestGoFiles\n        XTestImports []string          // imports from XTestGoFiles\n\n        // Error information\n        Incomplete bool            // this package or a dependency has an error\n        Error      *PackageError   // error loading package\n        DepsErrors []*PackageError // errors loading dependencies\n    }\n\nPackages stored in vendor directories report an ImportPath that includes the\npath to the vendor directory (for example, \"d/vendor/p\" instead of \"p\"),\nso that the ImportPath uniquely identifies a given copy of a package.\nThe Imports, Deps, TestImports, and XTestImports lists also contain these\nexpanded import paths. See golang.org/s/go15vendor for more about vendoring.\n\nThe error information, if any, is\n\n    type PackageError struct {\n        ImportStack   []string // shortest path from package named on command line to this one\n        Pos           string   // position of error (if present, file:line:col)\n        Err           string   // the error itself\n    }\n\nThe module information is a Module struct, defined in the discussion\nof list -m below.\n\nThe template function \"join\" calls strings.Join.\n\nThe template function \"context\" returns the build context, defined as:\n\n    type Context struct {\n        GOARCH        string   // target architecture\n        GOOS          string   // target operating system\n        GOROOT        string   // Go root\n        GOPATH        string   // Go path\n        CgoEnabled    bool     // whether cgo can be used\n        UseAllFiles   bool     // use files regardless of +build lines, file names\n        Compiler      string   // compiler to assume when computing target paths\n        BuildTags     []string // build constraints to match in +build lines\n        ReleaseTags   []string // releases the current release is compatible with\n        InstallSuffix string   // suffix to use in the name of the install dir\n    }\n\nFor more information about the meaning of these fields see the documentation\nfor the go/build package's Context type.",
+              "format": ["-f","%s"]
+            },
+            {
+              "name": "json",
+              "exportedName": "JSON",
+              "type": "boolean",
+              "description": "causes the package data to be printed in JSON format\ninstead of using the template format.",
+              "noValue": true,
+              "format": ["-json"]
+            },
+            {
+              "name": "compiled",
+              "exportedName": "Compiled",
+              "type": "boolean",
+              "description": "causes list to set CompiledGoFiles to the Go source\nfiles presented to the compiler. Typically this means that it repeats\nthe files listed in GoFiles and then also adds the Go code generated\nby processing CgoFiles and SwigFiles. The Imports list contains the\nunion of all imports from both GoFiles and CompiledGoFiles.",
+              "noValue": true,
+              "format": ["-compiled"]
+            },
+            {
+              "name": "dep",
+              "exportedName": "Dependencies",
+              "type": "boolean",
+              "description": "causes list to iterate over not just the named packages\nbut also all their dependencies. It visits them in a depth-first post-order\ntraversal, so that a package is listed only after all its dependencies.\nPackages not explicitly listed on the command line will have the DepOnly\nfield set to true.",
+              "noValue": true,
+              "format": ["-dep"]
+            },
+            {
+              "name": "errorHandling",
+              "exportedName": "ErrorHandling",
+              "type": "boolean",
+              "description": "changes the handling of erroneous packages, those that\ncannot be found or are malformed. By default, the list command\nprints an error to standard error for each erroneous package and\nomits the packages from consideration during the usual printing.\nWith the -e flag, the list command never prints errors to standard\nerror and instead processes the erroneous packages with the usual\nprinting. Erroneous packages will have a non-empty ImportPath and\na non-nil Error field; other information may or may not be missing\n(zeroed).",
+              "noValue": true,
+              "format": ["-e"]
+            },
+            {
+              "name": "export",
+              "exportedName": "Export",
+              "type": "boolean",
+              "description": "causes list to set the Export field to the name of a\nfile containing up-to-date export information for the given package.",
+              "noValue": true,
+              "format": ["-export"]
+            },
+            {
+              "name": "find",
+              "exportedName": "Find",
+              "type": "boolean",
+              "description": "causes list to identify the named packages but not\nresolve their dependencies: the Imports and Deps lists will be empty.",
+              "noValue": true,
+              "format": ["-find"]
+            },
+            {
+              "name": "test",
+              "exportedName": "Test",
+              "type": "boolean",
+              "description": "causes list to report not only the named packages\nbut also their test binaries (for packages with tests), to convey to\nsource code analysis tools exactly how test binaries are constructed.\nThe reported import path for a test binary is the import path of\nthe package followed by a \".test\" suffix, as in \"math/rand.test\".\nWhen building a test, it is sometimes necessary to rebuild certain\ndependencies specially for that test (most commonly the tested\npackage itself). The reported import path of a package recompiled\nfor a particular test binary is followed by a space and the name of\nthe test binary in brackets, as in \"math/rand [math/rand.test]\"\nor \"regexp [sort.test]\". The ForTest field is also set to the name\nof the package being tested (\"math/rand\" or \"sort\" in the previous\nexamples).\n\nThe Dir, Target, Shlib, Root, ConflictDir, and Export file paths\nare all absolute paths.\n\nBy default, the lists GoFiles, CgoFiles, and so on hold names of files in Dir\n(that is, paths relative to Dir, not absolute paths).\nThe generated files added when using the -compiled and -test flags\nare absolute paths referring to cached copies of generated Go source files.\nAlthough they are Go source files, the paths may not end in \".go\".",
+              "noValue": true,
+              "format": ["-test"]
+            },
+            {
+              "name": "module",
+              "exportedName": "Module",
+              "type": "boolean",
+              "description": "causes list to list modules instead of packages.\n\nWhen listing modules, the -f flag still specifies a format template\napplied to a Go struct, but now a Module struct:\n\n    type Module struct {\n        Path      string       // module path\n        Version   string       // module version\n        Versions  []string     // available module versions (with -versions)\n        Replace   *Module      // replaced by this module\n        Time      *time.Time   // time version was created\n        Update    *Module      // available update, if any (with -u)\n        Main      bool         // is this the main module?\n        Indirect  bool         // is this module only an indirect dependency of main module?\n        Dir       string       // directory holding files for this module, if any\n        GoMod     string       // path to go.mod file used when loading this module, if any\n        GoVersion string       // go version used in module\n        Error     *ModuleError // error loading module\n    }\n\n    type ModuleError struct {\n        Err string // the error itself\n    }\n\nThe file GoMod refers to may be outside the module directory if the\nmodule is in the module cache or if the -modfile flag is used.\n\nThe default output is to print the module path and then\ninformation about the version and replacement if any.\nFor example, 'go list -m all' might print:\n\n    my/main/module\n    golang.org/x/text v0.3.0 => /tmp/text\n    rsc.io/pdf v0.1.1\n\nThe Module struct has a String method that formats this\nline of output, so that the default format is equivalent\nto -f '{{.String}}'.\n\nNote that when a module has been replaced, its Replace field\ndescribes the replacement module, and its Dir field is set to\nthe replacement's source code, if present. (That is, if Replace\nis non-nil, then Dir is set to Replace.Dir, with no access to\nthe replaced source code.)\n\nThe -u flag adds information about available upgrades.\nWhen the latest version of a given module is newer than\nthe current one, list -u sets the Module's Update field\nto information about the newer module.\nThe Module's String method indicates an available upgrade by\nformatting the newer version in brackets after the current version.\nFor example, 'go list -m -u all' might print:\n\n    my/main/module\n    golang.org/x/text v0.3.0 [v0.4.0] => /tmp/text\n    rsc.io/pdf v0.1.1 [v0.1.2]\n\n(For tools, 'go list -m -u -json all' may be more convenient to parse.)",
+              "noValue": true,
+              "format": ["-m"]
+            },
+            {
+              "name": "versions",
+              "exportedName": "Versions",
+              "type": "boolean",
+              "description": "causes list to set the Module's Versions field\nto a list of all known versions of that module, ordered according\nto semantic versioning, earliest to latest. The flag also changes\nthe default output format to display the module path followed by the\nspace-separated version list.",
+              "noValue": true,
+              "format": ["-versions"]
+            }
+          ]
+        },
+        {
+          "name": "run",
+          "description": "Run compiles and runs the named main Go package.\nTypically the package is specified as a list of .go source files from a single directory,\nbut it may also be an import path, file system path, or pattern\nmatching a single known package, as in 'go run .' or 'go run my/cmd'.\n\nThe exit status of Run is not the exit status of the compiled binary.",
+          "exportedName": "Run",
+          "subCommandPath": ["run"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": [
+                {
+                  "name": "pkg",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "withArgs",
+              "exportedNameSuffix": "WithArgs",
+              "args": [
+                {
+                  "name": "pkg",
+                  "type": "string"
+                },
+                {
+                  "name": "args",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "options": [
+            {
+              "name": "exec",
+              "exportedName": "Exec",
+              "type": "string",
+              "description": "By default, 'go run' runs the compiled binary directly: 'a.out arguments...'.\nIf the -exec flag is given, 'go run' invokes the binary using xprog:\n\t'xprog a.out arguments...'.\nIf the -exec flag is not given, GOOS or GOARCH is different from the system\ndefault, and a program named go_$GOOS_$GOARCH_exec can be found\non the current search path, 'go run' invokes the binary using that program,\nfor example 'go_js_wasm_exec a.out arguments...'. This allows execution of\ncross-compiled programs when a simulator or other execution method is\navailable.",
+              "format": ["-exec","%s"]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "build"
+            }
+          ]
+        },
+        {
+          "name": "test",
+          "description": "'Go test' automates testing the packages named by the import paths.\nIt prints a summary of the test results in the format:\n\n\tok   archive/tar   0.011s\n\tFAIL archive/zip   0.022s\n\tok   compress/gzip 0.033s\n\t...\n\nfollowed by detailed output for each failed package.\n\n'Go test' recompiles each package along with any files with names matching\nthe file pattern \"*_test.go\".\nThese additional files can contain test functions, benchmark functions, and\nexample functions. See 'go help testfunc' for more.\nEach listed package causes the execution of a separate test binary.\nFiles whose names begin with \"_\" (including \"_test.go\") or \".\" are ignored.\n\nTest files that declare a package with the suffix \"_test\" will be compiled as a\nseparate package, and then linked and run with the main test binary.\n\nThe go tool will ignore a directory named \"testdata\", making it available\nto hold ancillary data needed by the tests.\n\nAs part of building a test binary, go test runs go vet on the package\nand its test source files to identify significant problems. If go vet\nfinds any problems, go test reports those and does not run the test\nbinary. Only a high-confidence subset of the default go vet checks are\nused. That subset is: 'atomic', 'bool', 'buildtags', 'errorsas',\n'ifaceassert', 'nilfunc', 'printf', and 'stringintconv'. You can see\nthe documentation for these and other vet tests via \"go doc cmd/vet\".\nTo disable the running of go vet, use the -vet=off flag.\n\nAll test output and summary lines are printed to the go command's\nstandard output, even if the test printed them to its own standard\nerror. (The go command's standard error is reserved for printing\nerrors building the tests.)\n\nGo test runs in two different modes:\n\nThe first, called local directory mode, occurs when go test is\ninvoked with no package arguments (for example, 'go test' or 'go\ntest -v'). In this mode, go test compiles the package sources and\ntests found in the current directory and then runs the resulting\ntest binary. In this mode, caching (discussed below) is disabled.\nAfter the package test finishes, go test prints a summary line\nshowing the test status ('ok' or 'FAIL'), package name, and elapsed\ntime.\n\nThe second, called package list mode, occurs when go test is invoked\nwith explicit package arguments (for example 'go test math', 'go\ntest ./...', and even 'go test .'). In this mode, go test compiles\nand tests each of the packages listed on the command line. If a\npackage test passes, go test prints only the final 'ok' summary\nline. If a package test fails, go test prints the full test output.\nIf invoked with the -bench or -v flag, go test prints the full\noutput even for passing package tests, in order to display the\nrequested benchmark results or verbose logging. After the package\ntests for all of the listed packages finish, and their output is\nprinted, go test prints a final 'FAIL' status if any package test\nhas failed.\n\nIn package list mode only, go test caches successful package test\nresults to avoid unnecessary repeated running of tests. When the\nresult of a test can be recovered from the cache, go test will\nredisplay the previous output instead of running the test binary\nagain. When this happens, go test prints '(cached)' in place of the\nelapsed time in the summary line.\n\nThe rule for a match in the cache is that the run involves the same\ntest binary and the flags on the command line come entirely from a\nrestricted set of 'cacheable' test flags, defined as -cpu, -list,\n-parallel, -run, -short, and -v. If a run of go test has any test\nor non-test flags outside this set, the result is not cached. To\ndisable test caching, use any test flag or argument other than the\ncacheable flags. The idiomatic way to disable test caching explicitly\nis to use -count=1. Tests that open files within the package's source\nroot (usually $GOPATH) or that consult environment variables only\nmatch future runs in which the files and environment variables are unchanged.\nA cached test result is treated as executing in no time at all,\nso a successful package test result will be cached and reused\nregardless of -timeout setting.",
+          "exportedName": "Test",
+          "subCommandPath": ["test"],
+          "options": [
+            {
+              "name": "compile",
+              "exportedName": "Compile",
+              "description": "Compile the test binary to pkg.test but do not run it\n(where pkg is the last element of the package's import path).\nThe file name can be changed with the -o flag.",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-c"]
+            },
+            {
+              "name": "exec",
+              "exportedName": "Exec",
+              "type": "string",
+              "description": "By default, 'go run' runs the compiled binary directly: 'a.out arguments...'.\nIf the -exec flag is given, 'go run' invokes the binary using xprog:\n\t'xprog a.out arguments...'.\nIf the -exec flag is not given, GOOS or GOARCH is different from the system\ndefault, and a program named go_$GOOS_$GOARCH_exec can be found\non the current search path, 'go run' invokes the binary using that program,\nfor example 'go_js_wasm_exec a.out arguments...'. This allows execution of\ncross-compiled programs when a simulator or other execution method is\navailable.",
+              "format": ["-exec","%s"]
+            },
+            {
+              "name": "installDependencies",
+              "exportedName": "InstallDependencies",
+              "type": "boolean",
+              "description": "Install packages that are dependencies of the test.\nDo not run the test.",
+              "noValue": true,
+              "format": ["-i"]
+            },
+            {
+              "name": "json",
+              "exportedName": "JSON",
+              "type": "boolean",
+              "description": "Convert test output to JSON suitable for automated processing.\nSee 'go doc test2json' for the encoding details.",
+              "noValue": true,
+              "format": ["-json"]
+            },
+            {
+              "name": "output",
+              "exportedName": "Output",
+              "type": "string",
+              "description": "Compile the test binary to the named file.\nThe test still runs (unless -c or -i is specified).",
+              "format": ["-o","%s"]
+            },
+            {
+              "name": "args",
+              "exportedName": "Args",
+              "type": "stringSlice",
+              "description": "Pass the remainder of the command line (everything after -args)\nto the test binary, uninterpreted and unchanged.\nBecause this flag consumes the remainder of the command line,\nthe package list (if present) must appear before this flag.",
+              "format": ["-args"],
+              "append": true
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "build"
+            },
+            {
+              "name": "printCommands"
+            }
+          ]
+        },
+        {
+          "name": "version",
+          "description": "Version prints the build information for Go executables.\n\nGo version reports the Go version used to build each of the named\nexecutable files.\n\nIf no files are named on the command line, go version prints its own\nversion information.",
+          "exportedName": "Version",
+          "subCommandPath": ["version"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withFile",
+              "exportedNameSuffix": "WithFile",
+              "args": [
+                {
+                  "name": "file",
+                  "type": "string"
+                }
+              ]
+            },
+            {
+              "name": "withFiles",
+              "exportedNameSuffix": "WithFiles",
+              "args": [
+                {
+                  "name": "files",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "options": [
+            {
+              "name": "reportUnrecognizedFiles",
+              "exportedName": "ReportUnrecognizedFiles",
+              "type": "boolean",
+              "description": "If a directory is named, go version walks that directory, recursively,\nlooking for recognized Go binaries and reporting their versions.\nBy default, go version does not report unrecognized files found\nduring a directory scan. The -v flag causes it to report unrecognized files.",
+              "noValue": true,
+              "format": ["-v"]
+            },
+            {
+              "name": "moduleVersionInfo",
+              "exportedName": "ModuleVersionInfo",
+              "type": "boolean",
+              "description": "causes go version to print each executable's embedded\nmodule version information, when available. In the output, the module\ninformation consists of multiple lines following the version line, each\nindented by a leading tab character.",
+              "noValue": true,
+              "format": ["-m"]
+            }
+          ]
+        },
+        {
+          "name": "vet",
+          "description": "Vet runs the Go vet command on the packages named by the import paths.\n\nFor more about vet and its flags, see 'go doc cmd/vet'.\nFor more about specifying packages, see 'go help packages'.\nFor a list of checkers and their flags, see 'go tool vet help'.\nFor details of a specific checker such as 'printf', see 'go tool vet help printf'.",
+          "exportedName": "Vet",
+          "subCommandPath": ["vet"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": [
+                {
+                  "name": "files",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "options": [
+            {
+              "name": "vetTool",
+              "exportedName": "VetTool",
+              "type": "string",
+              "description": "The -vettool=prog flag selects a different analysis tool with alternative\nor additional checks.\nFor example, the 'shadow' analyzer can be built and run using these commands:\n\n  go install golang.org/x/tools/go/analysis/passes/shadow/cmd/shadow\n  go vet -vettool=$(which shadow)",
+              "format": ["-vettool=\"%s\""]
+            }
+          ],
+          "optionSets": [
+            {
+              "name": "printCommands"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "package": "mod",
+      "description": "Go mod provides access to operations on modules.\n\nNote that support for modules is built into all the go commands,\nnot just 'go mod'. For example, day-to-day adding, removing, upgrading,\nand downgrading of dependencies should be done using 'go get'.\nSee 'go help modules' for an overview of module functionality.",
+      "commands": [
+        {
+          "name": "download",
+          "description": "Download downloads the named modules, which can be module patterns selecting\ndependencies of the main module or module queries of the form path@version.\nWith no arguments, download applies to all dependencies of the main module\n(equivalent to 'go mod download all').\n\nThe go command will automatically download modules as needed during ordinary\nexecution. The \"go mod download\" command is useful mainly for pre-filling\nthe local cache or to compute the answers for a Go module proxy.\n\nBy default, download writes nothing to standard output. It may print progress\nmessages and errors to standard error.",
+          "exportedName": "Download",
+          "subCommandPath": ["mod", "download"],
+          "options": [
+            {
+              "name": "json",
+              "exportedName": "JSON",
+              "type": "boolean",
+              "description": "causes download to print a sequence of JSON objects\nto standard output, describing each downloaded module (or failure),\ncorresponding to this Go struct:\n\n    type Module struct {\n        Path     string // module path\n        Version  string // module version\n        Error    string // error loading module\n        Info     string // absolute path to cached .info file\n        GoMod    string // absolute path to cached .mod file\n        Zip      string // absolute path to cached .zip file\n        Dir      string // absolute path to cached source root directory\n        Sum      string // checksum for path, version (as in go.sum)\n        GoModSum string // checksum for go.mod (as in go.sum)\n    }",
+              "noValue": true,
+              "format": ["-json"]
+            },
+            {
+              "name": "printCommands",
+              "exportedName": "PrintCommands",
+              "description": "print the commands.",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-x"]
+            }
+          ]
+        },
+        {
+          "name": "edit",
+          "description": "Edit provides a command-line interface for editing go.mod,\nfor use primarily by tools or scripts. It reads only go.mod;\nit does not look up information about the modules involved.\nBy default, edit reads and writes the go.mod file of the main module,\nbut a different target file can be specified after the editing flags.\n\nThe editing flags specify a sequence of editing operations.",
+          "exportedName": "Edit",
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": []
+            },
+            {
+              "name": "withGoModPath",
+              "exportedNameSuffix": "WithGoModPath",
+              "args": [
+                {
+                  "name": "goModPath",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "options": [
+            {
+              "name": "fmt",
+              "exportedName": "Fmt",
+              "type": "boolean",
+              "description": "reformats the go.mod file without making other changes.\nThis reformatting is also implied by any other modifications that use or\nrewrite the go.mod file. The only time this flag is needed is if no other\nflags are specified, as in 'go mod edit -fmt'.",
+              "noValue": true,
+              "format": ["-fmt"]
+            },
+            {
+              "name": "module",
+              "exportedName": "Module",
+              "type": "boolean",
+              "description": "changes the module's path (the go.mod file's module line).",
+              "noValue": true,
+              "format": ["-module"]
+            },
+            {
+              "name": "require",
+              "exportedName": "Require",
+              "type": "string",
+              "description": "The -require=path@version and -droprequire=path flags\nadd and drop a requirement on the given module path and version.\nNote that -require overrides any existing requirements on path.\nThese flags are mainly for tools that understand the module graph.\nUsers should prefer 'go get path@version' or 'go get path@none',\nwhich make other go.mod adjustments as needed to satisfy\nconstraints imposed by other modules.",
+              "format": ["-require=%s"]
+            },
+            {
+              "name": "dropRequire",
+              "exportedName": "DropRequire",
+              "type": "string",
+              "description": "The -require=path@version and -droprequire=path flags\nadd and drop a requirement on the given module path and version.\nNote that -require overrides any existing requirements on path.\nThese flags are mainly for tools that understand the module graph.\nUsers should prefer 'go get path@version' or 'go get path@none',\nwhich make other go.mod adjustments as needed to satisfy\nconstraints imposed by other modules.",
+              "format": ["-droprequire=%s"]
+            },
+            {
+              "name": "exclude",
+              "exportedName": "Exclude",
+              "type": "string",
+              "description": "The -exclude=path@version and -dropexclude=path@version flags\nadd and drop an exclusion for the given module path and version.\nNote that -exclude=path@version is a no-op if that exclusion already exists.",
+              "format": ["-exclude=%s"]
+            },
+            {
+              "name": "dropExclude",
+              "exportedName": "DropExclude",
+              "type": "string",
+              "description": "The -exclude=path@version and -dropexclude=path@version flags\nadd and drop an exclusion for the given module path and version.\nNote that -exclude=path@version is a no-op if that exclusion already exists.",
+              "format": ["-dropexclude=%s"]
+            },
+            {
+              "name": "replace",
+              "exportedName": "Replace",
+              "type": "string",
+              "description": "The -replace=old[@v]=new[@v] flag adds a replacement of the given\nmodule path and version pair. If the @v in old@v is omitted, a\nreplacement without a version on the left side is added, which applies\nto all versions of the old module path. If the @v in new@v is omitted,\nthe new path should be a local module root directory, not a module\npath. Note that -replace overrides any redundant replacements for old[@v],\nso omitting @v will drop existing replacements for specific versions.",
+              "format": ["-replace=%s"]
+            },
+            {
+              "name": "dropReplace",
+              "exportedName": "DropReplace",
+              "type": "string",
+              "description": "The -dropreplace=old[@v] flag drops a replacement of the given\nmodule path and version pair. If the @v is omitted, a replacement without\na version on the left side is dropped.",
+              "format": ["-dropreplace=%s"]
+            },
+            {
+              "name": "goVersion",
+              "exportedName": "GoVersion",
+              "type": "string",
+              "description": "sets the expected Go language version.",
+              "format": ["-go=%s"]
+            },
+            {
+              "name": "print",
+              "exportedName": "Print",
+              "type": "boolean",
+              "description": "prints the final go.mod in its text format instead of\nwriting it back to go.mod.",
+              "noValue": true,
+              "format": ["-print"]
+            },
+            {
+              "name": "json",
+              "exportedName": "JSON",
+              "type": "boolean",
+              "description": "prints the final go.mod file in JSON format instead of\nwriting it back to go.mod. The JSON output corresponds to these Go types:\n\n\ttype Module struct {\n\t\tPath string\n\t\tVersion string\n\t}\n\n\ttype GoMod struct {\n\t\tModule  Module\n\t\tGo      string\n\t\tRequire []Require\n\t\tExclude []Module\n\t\tReplace []Replace\n\t}\n\n\ttype Require struct {\n\t\tPath string\n\t\tVersion string\n\t\tIndirect bool\n\t}\n\n\ttype Replace struct {\n\t\tOld Module\n\t\tNew Module\n\t}\n\nNote that this only describes the go.mod file itself, not other modules\nreferred to indirectly. For the full set of modules available to a build,\nuse 'go list -m -json all'.\n\nFor example, a tool can obtain the go.mod as a data structure by\nparsing the output of 'go mod edit -json' and can then make changes\nby invoking 'go mod edit' with -require, -exclude, and so on.",
+              "noValue": true,
+              "format": ["-json"]
+            }
+          ]
+        },
+        {
+          "name": "graph",
+          "description": "Graph prints the module requirement graph (with replacements applied)\nin text form. Each line in the output has two space-separated fields: a module\nand one of its requirements. Each module is identified as a string of the form\npath@version, except for the main module, which has no @version suffix.",
+          "exportedName": "Graph",
+          "subCommandPath": ["mod","graph"]
+        },
+        {
+          "name": "init",
+          "description": "Init initializes and writes a new go.mod to the current directory,\nin effect creating a new module rooted at the current directory.\nThe file go.mod must not already exist.\nIf possible, init will guess the module path from import comments\n(see 'go help importpath') or from version control configuration.\nTo override this guess, supply the module path as an argument.",
+          "exportedName": "Init",
+          "subCommandPath": ["mod", "init"],
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": [
+                {
+                  "name": "module",
+                  "type": "string"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "tidy",
+          "description": "Tidy makes sure go.mod matches the source code in the module.\nIt adds any missing modules necessary to build the current module's\npackages and dependencies, and it removes unused modules that\ndon't provide any relevant packages. It also adds any missing entries\nto go.sum and removes any unnecessary ones.",
+          "exportedName": "Tidy",
+          "subCommandPath": ["mod", "tidy"],
+          "options": [
+            {
+              "name": "verbose",
+              "exportedName": "Verbose",
+              "type": "boolean",
+              "description": "Prints information about removed modules to standard error.",
+              "noValue": true,
+              "format": ["-v"]
+            }
+          ]
+        },
+        {
+          "name": "vendor",
+          "description": "Vendor resets the main module's vendor directory to include all packages\nneeded to build and test all the main module's packages.\nIt does not include test code for vendored packages.",
+          "exportedName": "Vendor",
+          "subCommandPath": ["mod", "vendor"],
+          "options": [
+            {
+              "name": "verbose",
+              "exportedName": "Verbose",
+              "type": "boolean",
+              "description": "print the names of vendored modules and packages to standard error.",
+              "noValue": true,
+              "format": ["-v"]
+            }
+          ]
+        },
+        {
+          "name": "verify",
+          "description": "Verify checks that the dependencies of the current module,\nwhich are stored in a local downloaded source cache, have not been\nmodified since being downloaded. If all the modules are unmodified,\nverify prints \"all modules verified.\" Otherwise it reports which\nmodules have been changed and causes 'go mod' to exit with a\nnon-zero status.",
+          "exportedName": "Verify",
+          "subCommandPath": ["mod", "verify"]
+        }
+      ]
+    }
+  ],
+  "optionSets": [
+    {
+      "name": "build",
+      "options": [
+        {
+          "name": "forceRebuild",
+          "exportedName": "ForceRebuild",
+          "description": "force rebuilding of packages that are already up-to-date.",
+          "type": "boolean",
+          "noValue": true,
+          "format": ["-a"]
+        },
+        {
+          "name": "workers",
+          "exportedName": "Workers",
+          "description": "the number of programs, such as build commands or\ntest binaries, that can be run in parallel.\nThe default is the number of CPUs available.",
+          "type": "int",
+          "format": ["-p","%d"]
+        },
+        {
+          "name": "race",
+          "exportedName": "Race",
+          "description": "enable data race detection.\nSupported only on linux/amd64, freebsd/amd64, darwin/amd64, windows/amd64,\nlinux/ppc64le and linux/arm64 (only for 48-bit VMA).",
+          "type": "boolean",
+          "noValue": true,
+          "format": ["-race"]
+        },
+        {
+          "name": "msan",
+          "exportedName": "EnableMemorySanitizer",
+          "description": "enable interoperation with memory sanitizer.\nSupported only on linux/amd64, linux/arm64\nand only with Clang/LLVM as the host C compiler.\nOn linux/arm64, pie build mode will be used.",
+          "type": "boolean",
+          "noValue": true,
+          "format": ["-msan"]
+        },
+        {
+          "name": "verbose",
+          "exportedName": "Verbose",
+          "description": "print the names of packages as they are compiled.",
+          "type": "boolean",
+          "noValue": true,
+          "format": ["-v"]
+        },
+        {
+          "name": "work",
+          "exportedName": "Work",
+          "description": "print the name of the temporary work directory and\ndo not delete it when exiting.",
+          "type": "boolean",
+          "noValue": true,
+          "format": ["-work"]
+        },
+        {
+          "name": "asmflags",
+          "exportedName": "ASMFlags",
+          "description": "value '[pattern=]arg list'\narguments to pass on each go tool asm invocation.",
+          "type": "string",
+          "format": ["-asmflags", "%s"]
+        },
+        {
+          "name": "buildmode",
+          "exportedName": "BuildMode",
+          "description": "build mode to use. See 'go help buildmode' for more.",
+          "type": "string",
+          "format": ["-buildmode", "%s"]
+        },
+        {
+          "name": "compiler",
+          "exportedName": "Compiler",
+          "description": "name of compiler to use, as in runtime.Compiler (gccgo or gc).",
+          "type": "string",
+          "format": ["-compiler","%s"]
+        },
+        {
+          "name": "gccgoflags",
+          "exportedName": "GCCGoFlags",
+          "description": "value '[pattern=]arg list'\narguments to pass on each gccgo compiler/linker invocation.",
+          "type": "string",
+          "format": ["-gccgoflags", "%s"]
+        },
+        {
+          "name": "gccflags",
+          "exportedName": "GCCFlags",
+          "description": "value '[pattern=]arg list'\narguments to pass on each go tool compile invocation.",
+          "type": "string",
+          "format": ["-gccflags", "%s"]
+        },
+        {
+          "name": "installSuffix",
+          "exportedName": "InstallSuffix",
+          "description": "a suffix to use in the name of the package installation directory,\nin order to keep output separate from default builds.\nIf using the -race flag, the install suffix is automatically set to race\nor, if set explicitly, has _race appended to it. Likewise for the -msan\nflag. Using a -buildmode option that requires non-default compile flags\nhas a similar effect.",
+          "type": "string",
+          "format": ["-installsuffix", "%s"]
+        },
+        {
+          "name": "ldflags",
+          "exportedName": "LDFlags",
+          "description": "value '[pattern=]arg list'\narguments to pass on each go tool link invocation.",
+          "type": "string",
+          "format": ["-ldflags", "%s"]
+        },
+        {
+          "name": "linkShared",
+          "exportedName": "LinkShared",
+          "description": "build code that will be linked against shared libraries previously\ncreated with -buildmode=shared.",
+          "type": "boolean",
+          "noValue": true,
+          "format": ["-linkshared"]
+        },
+        {
+          "name": "mod",
+          "exportedName": "Mod",
+          "description": "module download mode to use: readonly, vendor, or mod.\nSee 'go help modules' for more.",
+          "type": "string",
+          "format": ["-mod","%s"]
+        },
+        {
+          "name": "modcacherw",
+          "exportedName": "ModCacheRW",
+          "description": "leave newly-created directories in the module cache read-write\ninstead of making them read-only.",
+          "type": "boolean",
+          "noValue": true,
+          "format": ["-modcacherw"]
+        },
+        {
+          "name": "modfile",
+          "exportedName": "ModFile",
+          "description": "in module aware mode, read (and possibly write) an alternate go.mod\nfile instead of the one in the module root directory. A file named\n\"go.mod\" must still be present in order to determine the module root\ndirectory, but it is not accessed. When -modfile is specified, an\nalternate go.sum file is also used: its path is derived from the\n-modfile flag by trimming the \".mod\" extension and appending \".sum\".",
+          "type": "string",
+          "format": ["-modfile","%s"]
+        },
+        {
+          "name": "pkgdir",
+          "exportedName": "PackageDir",
+          "description": "install and load all packages from dir instead of the usual locations.\nFor example, when building with a non-standard configuration,\nuse -pkgdir to keep generated packages in a separate location",
+          "type": "string",
+          "format": ["-pkgdir","%s"]
+        },
+        {
+          "name": "tags",
+          "exportedName": "Tags",
+          "description": "a comma-separated list of build tags to consider satisfied during the\nbuild. For more information about build tags, see the description of\nbuild constraints in the documentation for the go/build package.\n(Earlier versions of Go used a space-separated list, and that form\nis deprecated but still recognized.)\nNOTE: comma separation is handled automatically",
+          "type": "stringSlice",
+          "format": ["-tags", "%s"],
+          "valueJoin": ","
+        },
+        {
+          "name": "trimpath",
+          "exportedName": "TrimPath",
+          "description": "remove all file system paths from the resulting executable.\nInstead of absolute file system paths, the recorded file names\nwill begin with either \"go\" (for the standard library),\nor a module path@version (when using modules),\nor a plain import path (when using GOPATH).",
+          "type": "boolean",
+          "noValue": true,
+          "format": ["-trimpath"]
+        },
+        {
+          "name": "toolexec",
+          "exportedName": "ToolExec",
+          "description": "a program to use to invoke toolchain programs like vet and asm.\nFor example, instead of running asm, the go command will run\n'cmd args /path/to/asm <arguments for asm>'.",
+          "type": "string",
+          "format": ["-toolexec", "%s"]
+        }
+      ]
+    },
+    {
+      "name": "printCommands",
+      "options": [
+        {
+          "name": "printCommandsOnly",
+          "exportedName": "PrintCommandsOnly",
+          "description": "print the commands but do not run them.",
+          "type": "boolean",
+          "noValue": true,
+          "format": ["-n"]
+        },
+        {
+          "name": "printCommands",
+          "exportedName": "PrintCommands",
+          "description": "print the commands.",
+          "type": "boolean",
+          "noValue": true,
+          "format": ["-x"]
+        }
+      ]
+    }
+  ]
+}

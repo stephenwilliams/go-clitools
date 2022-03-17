@@ -1,0 +1,511 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/stephenwilliams/go-clitools/master/tools.schema.json",
+  "title": "CLI Tool specification schema",
+  "description": "Used to generate CLI tool libraries",
+  "definitions": {
+    "tool": {
+      "type": "object",
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "format": "uri"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the CLI tool"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the CLI tool"
+        },
+        "executableName": {
+          "type": "string",
+          "description": "Name of the executable"
+        },
+        "exportedName": {
+          "type": "string",
+          "description": "The exported name of the tool. Used for naming the tool info"
+        },
+        "package": {
+          "type": "string",
+          "pattern": "^([A-z0-9]*)$"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commandGroup"
+          },
+          "uniqueItems": true,
+          "minItems": 1
+        },
+        "optionSets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/optionSet"
+          },
+          "uniqueItems": true
+        },
+        "downloaders": {
+          "$ref": "#/definitions/downloaders"
+        },
+        "defaultToolProvider": {
+          "$ref": "#/definitions/toolProvider"
+        },
+        "versionProvider": {
+          "$ref": "#/definitions/versionProvider"
+        }
+      },
+      "required": [
+        "name",
+        "description",
+        "executableName",
+        "exportedName",
+        "package",
+        "groups",
+        "versionProvider"
+      ]
+    },
+    "stringReplacer": {
+      "type": "object",
+      "properties": {
+        "old": {
+          "type": "string"
+        },
+        "new": {
+          "type": "string"
+        },
+        "numberOfReplacements": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "old",
+        "new"
+      ]
+    },
+    "versionSelector": {
+      "type": "object",
+      "properties": {
+        "splitLine": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer"
+            }
+          },
+          "required": ["index"]
+        },
+        "splitString": {
+          "type": "object",
+          "properties": {
+            "index": {
+              "type": "integer"
+            },
+            "separator": {
+              "type": "string",
+              "default": " "
+            }
+          },
+          "required": ["index"]
+        },
+        "stringReplace": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/stringReplacer"
+          }
+        },
+        "trimPrefix": {
+          "type": "string"
+        },
+        "trimSuffix": {
+          "type": "string"
+        },
+        "equalsReplace": {
+          "$ref": "#/definitions/stringReplacer"
+        }
+      }
+    },
+    "versionProvider": {
+      "type": "object",
+      "properties": {
+        "commandArgs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "captureStderr": {
+          "type": "boolean",
+          "default": false
+        },
+        "selector": {
+          "$ref": "#/definitions/versionSelector"
+        }
+      },
+      "required": [
+        "commandArgs",
+        "selector"
+      ]
+    },
+    "goType": {
+      "enum": [
+        "boolean",
+        "duration",
+        "int",
+        "string",
+        "stringSlice"
+      ]
+    },
+    "option": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "exportedName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/goType"
+        },
+        "format": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "valueJoin": {
+          "type": "string",
+          "description": "When using type '[]string' and this is set, it changes the value injected to be string joined on this character"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "noValue": {
+          "type": "boolean"
+        },
+        "repeated": {
+          "type": "boolean",
+          "description": "Only valid for slice types. Whether or not the format is repeated for each value of the slice."
+        },
+        "append": {
+          "type": "boolean",
+          "description": "Only valid for slice types. Appends the values to the args array."
+        }
+      },
+      "required": [
+        "name",
+        "exportedName",
+        "type",
+        "format"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "pattern": ".*Slice"
+              }
+            }
+          },
+          "then": {
+            "oneOf": [
+              {
+                "required": ["valueJoin"]
+              },
+              {
+                "required": ["repeated"]
+              },
+              {
+                "required": ["append"]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "argumentSet": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "exportedNameSuffix": {
+          "type": "string"
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/argument"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "exportedNameSuffix",
+        "args"
+      ]
+    },
+    "argument": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/goType"
+        },
+        "format": {
+          "type": "string"
+        },
+        "excludeDefaultValue": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "type"
+      ]
+    },
+    "command": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "package": {
+          "type": "string"
+        },
+        "exportedName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "subCommandPath": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/option"
+          },
+          "uniqueItems": true
+        },
+        "optionSets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/optionSetRef"
+          }
+        },
+        "argumentSets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/argumentSet"
+          },
+          "uniqueItems": true
+        },
+        "argsFirst": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "exportedName"
+      ],
+      "additionalProperties": false
+    },
+    "commandGroup": {
+      "type": "object",
+      "properties": {
+        "package": {
+          "type": "string",
+          "pattern": "^(@|[A-z0-9]*)$"
+        },
+        "description": {
+          "type": "string"
+        },
+        "commands": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/command"
+          },
+          "uniqueItems": true
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commandGroup"
+          },
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "package",
+        "description",
+        "commands"
+      ]
+    },
+    "optionSet": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/option"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "name",
+        "options"
+      ]
+    },
+    "optionSetRef": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": ["name"]
+    },
+    "downloaders": {
+      "type": "object",
+      "properties": {
+        "githubRelease": {
+          "$ref": "#/definitions/githubReleaseDownloader"
+        }
+      }
+    },
+    "githubReleaseDownloader": {
+      "type": "object",
+      "properties": {
+        "owner": {
+          "type": "string",
+          "description": "Github repository owner"
+        },
+        "repository": {
+          "type": "string",
+          "description": "Github repository name"
+        },
+        "tagPrefix": {
+          "type": "string"
+        },
+        "assetSelector": {
+          "type": "string"
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "archivePath": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "owner",
+        "repository",
+        "assetSelector"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "archived": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "archivePath": {
+                "pattern": ".+"
+              }
+            },
+            "required": [
+              "archivePath"
+            ]
+          }
+        }
+      ]
+    },
+    "toolProvider": {
+      "type": "object",
+      "properties": {
+        "chain": {
+          "type": "object",
+          "properties": {
+            "providers": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/toolProvider"
+              },
+              "minItems": 2
+            }
+          }
+        },
+        "definedToolPath": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "path"
+          ]
+        },
+        "downloader": {
+          "type": "object",
+          "properties": {
+            "downloader": {
+              "type": "string"
+            }
+          },
+          "required": ["downloader"]
+        },
+        "path": {
+          "type": "boolean"
+        }
+      },
+      "oneOf": [
+        {
+          "required": ["chain"]
+        },
+        {
+          "required": ["definedToolPath"]
+        },
+        {
+          "required": ["downloader"]
+        },
+        {
+          "required": ["path"]
+        }
+      ]
+    }
+  },
+  "$ref": "#/definitions/tool"
+}
