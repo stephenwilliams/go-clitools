@@ -48,6 +48,7 @@ func (c *command) execute(ctx context.Context, stdout, stderr io.Writer) (ran bo
 	cmd.Stderr = stderr
 	cmd.Stdout = stdout
 	cmd.Stdin = os.Stdin
+	cmd.Dir = c.wd
 	c.logger.Log(cmd.Path, c.args, cmd.Env)
 	err = cmd.Run()
 	return CmdRan(err), GetExitStatus(err), err
