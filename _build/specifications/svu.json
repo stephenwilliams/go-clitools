@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/stephenwilliams/go-clitools/master/tools.schema.json",
+  "$schema": "https://raw.githubusercontent.com/stephenwilliams/go-clitools/main/_build/tool.schema.json",
   "name": "Semantic Version Util",
   "description": "Semantic Version Util is a tool to manage semantic versions at ease!",
   "executableName": "svu",

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/stephenwilliams/go-clitools/master/tools.schema.json",
+  "$schema": "https://raw.githubusercontent.com/stephenwilliams/go-clitools/main/_build/tool.schema.json",
   "name": "misspell",
   "description": "Correct commonly misspelled English words... quickly.",
   "executableName": "misspell",

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/stephenwilliams/go-clitools/master/tools.schema.json",
+  "$schema": "https://raw.githubusercontent.com/stephenwilliams/go-clitools/main/_build/tool.schema.json",
   "name": "Lefthook",
   "description": "Fast and powerful Git hooks manager for Node.js, Ruby or any other type of projects.",
   "executableName": "lefthook",

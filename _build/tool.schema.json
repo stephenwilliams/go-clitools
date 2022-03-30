@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://raw.githubusercontent.com/stephenwilliams/go-clitools/master/tools.schema.json",
+  "$id": "https://raw.githubusercontent.com/stephenwilliams/go-clitools/main/_build/tool.schema.json",
   "title": "CLI Tool specification schema",
   "description": "Used to generate CLI tool libraries",
   "definitions": {
