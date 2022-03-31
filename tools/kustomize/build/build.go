@@ -111,7 +111,7 @@ func EnableStar() BuildOpt {
 // a list of environment variables to be used by functions
 func Env(value ...string) BuildOpt {
 	return func(opts *buildOptions) {
-		opts.env = value
+		opts.env = append(opts.env, value...)
 	}
 }
 
@@ -132,7 +132,7 @@ func LoadRestrictor(value string) BuildOpt {
 // a list of storage options read from the filesystem
 func Mount(value ...string) BuildOpt {
 	return func(opts *buildOptions) {
-		opts.mount = value
+		opts.mount = append(opts.mount, value...)
 	}
 }
 

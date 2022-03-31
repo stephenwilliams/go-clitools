@@ -87,7 +87,7 @@ func SetToolVersion(v string) ImportOpt {
 // Select clusters to load the image to. (default [k3s-default])
 func Cluster(value ...string) ImportOpt {
 	return func(opts *importOptions) {
-		opts.cluster = value
+		opts.cluster = append(opts.cluster, value...)
 	}
 }
 

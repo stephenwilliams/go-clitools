@@ -282,7 +282,7 @@ func PackageDir(value string) InstallOpt {
 // NOTE: comma separation is handled automatically
 func Tags(value ...string) InstallOpt {
 	return func(opts *installOptions) {
-		opts.tags = value
+		opts.tags = append(opts.tags, value...)
 	}
 }
 

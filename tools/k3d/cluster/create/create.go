@@ -80,7 +80,7 @@ func Config(value string) CreateOpt {
 // Add environment variables to nodes (Format: KEY[=VALUE][@NODEFILTER[;NODEFILTER...]]
 func Env(value ...string) CreateOpt {
 	return func(opts *createOptions) {
-		opts.env = value
+		opts.env = append(opts.env, value...)
 	}
 }
 
@@ -101,14 +101,14 @@ func Image(value string) CreateOpt {
 // Additional args passed to the k3s agent command on agent nodes
 func K3sAgentArgs(value ...string) CreateOpt {
 	return func(opts *createOptions) {
-		opts.k3sAgentArgs = value
+		opts.k3sAgentArgs = append(opts.k3sAgentArgs, value...)
 	}
 }
 
 // Additional args passed to the k3s server command on server nodes
 func K3sServerArgs(value ...string) CreateOpt {
 	return func(opts *createOptions) {
-		opts.k3sServerArgs = value
+		opts.k3sServerArgs = append(opts.k3sServerArgs, value...)
 	}
 }
 
@@ -129,7 +129,7 @@ func KubeconfigUpdateDefault(value bool) CreateOpt {
 // Add label to node container (Format: KEY[=VALUE][@NODEFILTER[;NODEFILTER...]]
 func Labels(value ...string) CreateOpt {
 	return func(opts *createOptions) {
-		opts.labels = value
+		opts.labels = append(opts.labels, value...)
 	}
 }
 
@@ -171,7 +171,7 @@ func NoRollback() CreateOpt {
 // Map ports from the node containers to the host (Format: [HOST:][HOSTPORT:]CONTAINERPORT[/PROTOCOL][@NODEFILTER])
 func Port(value ...string) CreateOpt {
 	return func(opts *createOptions) {
-		opts.port = value
+		opts.port = append(opts.port, value...)
 	}
 }
 
@@ -192,7 +192,7 @@ func RegistryCreate() CreateOpt {
 // Connect to one or more k3d-managed registries running locally
 func RegistryUse(value ...string) CreateOpt {
 	return func(opts *createOptions) {
-		opts.registryUse = value
+		opts.registryUse = append(opts.registryUse, value...)
 	}
 }
 
@@ -227,7 +227,7 @@ func Timeout(value time.Duration) CreateOpt {
 // Mount volumes into the nodes (Format: [SOURCE:]DEST[@NODEFILTER[;NODEFILTER...]]
 func Volume(value ...string) CreateOpt {
 	return func(opts *createOptions) {
-		opts.volume = value
+		opts.volume = append(opts.volume, value...)
 	}
 }
 

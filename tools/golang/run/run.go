@@ -256,7 +256,7 @@ func PackageDir(value string) RunOpt {
 // NOTE: comma separation is handled automatically
 func Tags(value ...string) RunOpt {
 	return func(opts *runOptions) {
-		opts.tags = value
+		opts.tags = append(opts.tags, value...)
 	}
 }
 

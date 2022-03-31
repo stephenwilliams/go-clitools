@@ -140,7 +140,7 @@ func ExcludeNonLocal() TreeOpt {
 // print field
 func Field(value ...string) TreeOpt {
 	return func(opts *treeOptions) {
-		opts.field = value
+		opts.field = append(opts.field, value...)
 	}
 }
 

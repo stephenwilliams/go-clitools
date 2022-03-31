@@ -71,7 +71,7 @@ func FromFile(value string) SecretOpt {
 // Specify a key and literal value to insert in secret (i.e. mykey=somevalue)
 func FromLiteral(value ...string) SecretOpt {
 	return func(opts *secretOptions) {
-		opts.fromLiteral = value
+		opts.fromLiteral = append(opts.fromLiteral, value...)
 	}
 }
 

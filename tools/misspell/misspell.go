@@ -71,7 +71,7 @@ func Format(value string) MisspellOpt {
 // ignore the following corrections
 func IgnoredCorrections(value ...string) MisspellOpt {
 	return func(opts *misspellOptions) {
-		opts.ignoredCorrections = value
+		opts.ignoredCorrections = append(opts.ignoredCorrections, value...)
 	}
 }
 

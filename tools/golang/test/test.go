@@ -181,7 +181,7 @@ func Output(value string) TestOpt {
 // the package list (if present) must appear before this flag.
 func Args(value ...string) TestOpt {
 	return func(opts *testOptions) {
-		opts.args = value
+		opts.args = append(opts.args, value...)
 	}
 }
 
@@ -346,7 +346,7 @@ func PackageDir(value string) TestOpt {
 // NOTE: comma separation is handled automatically
 func Tags(value ...string) TestOpt {
 	return func(opts *testOptions) {
-		opts.tags = value
+		opts.tags = append(opts.tags, value...)
 	}
 }
 

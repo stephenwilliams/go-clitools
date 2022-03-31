@@ -203,7 +203,7 @@ func (g *commandGenerator) generateOptionsFuncs() error {
 			g.f.Do(descriptionComment(ptrhelpers.StringValue(opt.Description)))
 			g.f.Func().Id(opt.ExportedName).Params(Id("value").Id("...string")).Id(g.optionType).Block(
 				Return(Func().Params(Id("opts").Op("*").Id(g.optsStruct)).Block(
-					Id("opts").Dot(opt.Name).Op("=").Id("value"),
+					Id("opts").Dot(opt.Name).Op("=").Append(List(Id("opts").Dot(opt.Name), Id("value").Op("..."))),
 				)),
 			)
 		default:

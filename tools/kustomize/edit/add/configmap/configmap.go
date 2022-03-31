@@ -78,7 +78,7 @@ func FromFile(value string) ConfigMapOpt {
 // Specify a key and literal value to insert in configmap (i.e. mykey=somevalue)
 func FromLiteral(value ...string) ConfigMapOpt {
 	return func(opts *configmapOptions) {
-		opts.fromLiteral = value
+		opts.fromLiteral = append(opts.fromLiteral, value...)
 	}
 }
 
