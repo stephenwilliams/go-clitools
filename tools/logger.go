@@ -24,7 +24,7 @@ func (SimpleLogger) Log(cmdPath string, args []string, env []string) {
 func fmtArgs(args []string) string {
 	result := make([]string, len(args))
 
-	for i, arg := range result {
+	for i, arg := range args {
 		if strings.ContainsAny(arg, " \t\n") {
 			result[i] = "\"" + arg + "\""
 		} else {
