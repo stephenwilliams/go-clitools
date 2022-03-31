@@ -1,0 +1,174 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stephenwilliams/go-clitools/main/_build/tool.schema.json",
+  "name": "kubeconform",
+  "description": "A FAST Kubernetes manifests validator, with support for Custom Resources! ",
+  "executableName": "kubeconform",
+  "package": "kubeconform",
+  "exportedName": "KubeConform",
+  "versionProvider":{
+    "commandArgs": ["-v"],
+    "selector": {
+      "splitLine": {
+        "index": 0
+      }
+    }
+  },
+  "downloaders": {
+    "githubRelease": {
+      "owner": "yannh",
+      "repository": "kubeconform",
+      "tagPrefix": "v",
+      "assetSelector": "kubeconform-{{.OS}}-{{.Arch}}.tar.gz",
+      "archived": true,
+      "archivePath": "kubeconform"
+    }
+  },
+  "defaultToolProvider": {
+    "chain": {
+      "providers": [
+        {
+          "path": true
+        },
+        {
+          "downloader": {
+            "downloader": "GithubReleaseDownloader"
+          }
+        }
+      ]
+    }
+  },
+  "groups": [
+    {
+      "package": "@",
+      "description": "",
+      "commands": [
+        {
+          "name": "kubeconform",
+          "exportedName": "KubeConform",
+          "argumentSets": [
+            {
+              "name": "@",
+              "exportedNameSuffix": "",
+              "args": [
+                {
+                  "name": "fileOrFolder",
+                  "type": "string",
+                  "excludeDefaultValue": true
+                }
+              ]
+            },
+            {
+              "name": "@",
+              "exportedNameSuffix": "WithFilesOrFolders",
+              "args": [
+                {
+                  "name": "filesOrFolders",
+                  "type": "stringSlice"
+                }
+              ]
+            }
+          ],
+          "options": [
+            {
+              "name": "cache",
+              "exportedName": "Cache",
+              "description": "cache schemas downloaded via HTTP to this folder",
+              "type": "string",
+              "format": ["-cache", "%s"]
+            },
+            {
+              "name": "cpuProf",
+              "exportedName": "CPUProf",
+              "description": "debug - log CPU profiling to file",
+              "type": "string",
+              "format": ["-cpu-prof", "%s"]
+            },
+            {
+              "name": "ignoreFilenamePattern",
+              "exportedName": "IgnoreFilenamePattern",
+              "description": "regular expression specifying paths to ignore",
+              "type": "stringSlice",
+              "format": ["-ignore-filename-pattern", "%s"],
+              "repeated": true
+            },
+            {
+              "name": "ignoreMissingSchemas",
+              "exportedName": "IgnoreMissingSchemas",
+              "description": "skip files with missing schemas instead of failing",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-ignore-missing-schemas"]
+            },
+            {
+              "name": "kubernetesVersion",
+              "exportedName": "KubernetesVersion",
+              "description": "version of Kubernetes to validate against, e.g.: 1.18.0 (default \"master\")",
+              "type": "string",
+              "format": ["-kubernetes-version", "%s"]
+            },
+            {
+              "name": "n",
+              "exportedName": "N",
+              "description": "number of goroutines to run concurrently (default 4)",
+              "type": "int",
+              "format": ["-n", "%d"]
+            },
+            {
+              "name": "output",
+              "exportedName": "Output",
+              "description": "output format - json, junit, tap, text (default \"text\")",
+              "type": "string",
+              "format": ["-output", "%s"]
+            },
+            {
+              "name": "reject",
+              "exportedName": "Reject",
+              "description": "comma-separated list of kinds to reject",
+              "type": "string",
+              "format": ["-reject", "%s"]
+            },
+            {
+              "name": "schemaLocation",
+              "exportedName": "SchemaLocation",
+              "description": "override schemas location search path",
+              "type": "stringSlice",
+              "format": ["-schema-location","%s"],
+              "repeated": true
+            },
+            {
+              "name": "skip",
+              "exportedName": "Skip",
+              "description": "comma-separated list of kinds to ignore",
+              "type": "string",
+              "format": ["-skip", "%s"]
+            },
+            {
+              "name": "strict",
+              "exportedName": "Strict",
+              "description": "disallow additional properties not in schema",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-strict"]
+            },
+            {
+              "name": "summary",
+              "exportedName": "Summary",
+              "description": "print a summary at the end (ignored for junit output)",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-summary"]
+            },
+            {
+              "name": "verbose",
+              "exportedName": "Verbose",
+              "description": "print results for all resources (ignored for tap and junit output)",
+              "type": "boolean",
+              "noValue": true,
+              "format": ["-verbose"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
