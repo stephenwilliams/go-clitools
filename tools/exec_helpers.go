@@ -30,7 +30,7 @@ type ExitStatus interface {
 // or if it implements ExitStatus.
 // It returns 0 if err is nil or 1 if it is an unrecognized error type
 func GetExitStatus(err error) int {
-	if err != nil {
+	if err == nil {
 		return 0
 	}
 
