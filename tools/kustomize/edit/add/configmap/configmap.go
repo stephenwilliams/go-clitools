@@ -120,7 +120,9 @@ func (o *configmapOptions) toArgs() []string {
 	}
 
 	if o.fromLiteral != nil {
-		renderedArgs = append(renderedArgs, "--from-literal", fmt.Sprintf("%s", o.fromLiteral))
+		for _, v := range o.fromLiteral {
+			renderedArgs = append(renderedArgs, "--from-literal", fmt.Sprintf("%s", v))
+		}
 	}
 
 	if o.stackTrace != nil {

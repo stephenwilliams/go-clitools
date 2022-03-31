@@ -219,7 +219,9 @@ func (o *buildOptions) toArgs() []string {
 	}
 
 	if o.env != nil {
-		renderedArgs = append(renderedArgs, "--env", fmt.Sprintf("%s", o.env))
+		for _, v := range o.env {
+			renderedArgs = append(renderedArgs, "--env", fmt.Sprintf("%s", v))
+		}
 	}
 
 	if o.helmCommand != nil {
@@ -231,7 +233,9 @@ func (o *buildOptions) toArgs() []string {
 	}
 
 	if o.mount != nil {
-		renderedArgs = append(renderedArgs, "--mount", fmt.Sprintf("%s", o.mount))
+		for _, v := range o.mount {
+			renderedArgs = append(renderedArgs, "--mount", fmt.Sprintf("%s", v))
+		}
 	}
 
 	if o.network != nil {

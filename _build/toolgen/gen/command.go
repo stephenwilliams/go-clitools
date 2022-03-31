@@ -219,21 +219,41 @@ func (g *commandGenerator) generateOptionsToArgsFuncBody() func(grp *Group) {
 		grp.Var().Id("renderedArgs").Index().String()
 		grp.Line()
 		for _, opt := range g.options {
-			grp.If(Id("o").Dot(opt.Name).Op("!=").Nil()).Block(Id("renderedArgs").Op("=").AppendFunc(func(appendGrp *Group) {
-				appendGrp.Id("renderedArgs")
-				for _, v := range opt.Format {
-					if err := g.valueHandling(appendGrp, v, &opt); err != nil {
-						panic(err)
-					}
+			if ptrhelpers.BoolValue(opt.Repeated) {
+				switch tools.GetGoType(opt.Type) {
+				case tools.GoTypeStringSlice:
+					grp.If(Id("o").Dot(opt.Name).Op("!=").Nil()).Block(
+						For(List(Id("_"), Id("v"))).Op(":=").Range().Id("o").Dot(opt.Name).Block(
+							Id("renderedArgs").Op("=").AppendFunc(func(appendGrp *Group) {
+								appendGrp.Id("renderedArgs")
+								for _, v := range opt.Format {
+									if err := g.valueHandling(appendGrp, v, opt.Type, Id("v"), nil); err != nil {
+										panic(err)
+									}
+								}
+							}),
+						),
+					)
+				default:
+					panic(fmt.Errorf("option type '%s' cannot be used with repeated enabled", opt.Name))
 				}
-			}))
+			} else {
+				grp.If(Id("o").Dot(opt.Name).Op("!=").Nil()).Block(Id("renderedArgs").Op("=").AppendFunc(func(appendGrp *Group) {
+					appendGrp.Id("renderedArgs")
+					for _, v := range opt.Format {
+						if err := g.valueHandling(appendGrp, v, opt.Type, Id("o").Dot(opt.Name), opt.ValueJoin); err != nil {
+							panic(err)
+						}
+					}
+				}))
+			}
 			grp.Line()
 		}
 		grp.Return(Id("renderedArgs"))
 	}
 }
 
-func (g *commandGenerator) valueHandling(grp *Group, format string, opt *tools.Option) error {
+func (g *commandGenerator) valueHandling(grp *Group, format string, optType tools.OptionType, valueCode Code, valueJoin *string) error {
 	if !strings.Contains(format, "%") {
 		grp.Lit(format)
 		return nil
@@ -241,7 +261,7 @@ func (g *commandGenerator) valueHandling(grp *Group, format string, opt *tools.O
 
 	g.f.ImportName("fmt", "fmt")
 
-	vp, err := g.getValueProvider(opt)
+	vp, err := g.getValueProvider(optType, valueCode, valueJoin)
 	if err != nil {
 		return err
 	}
@@ -250,25 +270,25 @@ func (g *commandGenerator) valueHandling(grp *Group, format string, opt *tools.O
 	return nil
 }
 
-func (g *commandGenerator) getValueProvider(opt *tools.Option) (Code, error) {
-	switch tools.GetGoType(opt.Type) {
+func (g *commandGenerator) getValueProvider(optType tools.OptionType, valueCode Code, valueJoin *string) (Code, error) {
+	switch tools.GetGoType(optType) {
 	case tools.GoTypeBoolean:
-		return Qual(pkgPTRHelpers, "BoolValue").Call(Id("o").Dot(opt.Name)), nil
+		return Qual(pkgPTRHelpers, "BoolValue").Call(valueCode), nil
 	case tools.GoTypeDuration:
-		return Id("o").Dot(opt.Name), nil
+		return valueCode, nil
 	case tools.GoTypeInt:
-		return Qual(pkgPTRHelpers, "IntValue").Call(Id("o").Dot(opt.Name)), nil
+		return Qual(pkgPTRHelpers, "IntValue").Call(valueCode), nil
 	case tools.GoTypeString:
-		return Qual(pkgPTRHelpers, "StringValue").Call(Id("o").Dot(opt.Name)), nil
+		return Qual(pkgPTRHelpers, "StringValue").Call(valueCode), nil
 	case tools.GoTypeStringSlice:
-		if opt.ValueJoin != nil {
+		if valueJoin != nil {
 			g.f.ImportName("strings", "strings")
-			return Qual("strings", "Join").Call(Id("o").Dot(opt.Name), Lit(ptrhelpers.StringValue(opt.ValueJoin))), nil
+			return Qual("strings", "Join").Call(valueCode, Lit(ptrhelpers.StringValue(valueJoin))), nil
 		}
 
-		return Id("o").Dot(opt.Name), nil
+		return valueCode, nil
 	default:
-		return nil, fmt.Errorf("unknown type '%s'", opt.Type)
+		return nil, fmt.Errorf("unknown type '%s'", optType)
 	}
 }
 

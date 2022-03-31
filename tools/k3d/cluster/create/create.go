@@ -169,9 +169,9 @@ func NoRollback() CreateOpt {
 }
 
 // Map ports from the node containers to the host (Format: [HOST:][HOSTPORT:]CONTAINERPORT[/PROTOCOL][@NODEFILTER])
-func Port(value string) CreateOpt {
+func Port(value ...string) CreateOpt {
 	return func(opts *createOptions) {
-		opts.port = &value
+		opts.port = value
 	}
 }
 
@@ -279,7 +279,7 @@ type createOptions struct {
 	noImageVolume           *bool
 	noLB                    *bool
 	noRollback              *bool
-	port                    *string
+	port                    []string
 	registryConfig          *string
 	registryCreate          *bool
 	registryUse             []string
@@ -314,7 +314,9 @@ func (o *createOptions) toArgs() []string {
 	}
 
 	if o.env != nil {
-		renderedArgs = append(renderedArgs, "--env", fmt.Sprintf("%s", o.env))
+		for _, v := range o.env {
+			renderedArgs = append(renderedArgs, "--env", fmt.Sprintf("%s", v))
+		}
 	}
 
 	if o.gpus != nil {
@@ -326,11 +328,15 @@ func (o *createOptions) toArgs() []string {
 	}
 
 	if o.k3sAgentArgs != nil {
-		renderedArgs = append(renderedArgs, "--k3s-agent-arg", fmt.Sprintf("%s", o.k3sAgentArgs))
+		for _, v := range o.k3sAgentArgs {
+			renderedArgs = append(renderedArgs, "--k3s-agent-arg", fmt.Sprintf("%s", v))
+		}
 	}
 
 	if o.k3sServerArgs != nil {
-		renderedArgs = append(renderedArgs, "--k3s-server-arg", fmt.Sprintf("%s", o.k3sServerArgs))
+		for _, v := range o.k3sServerArgs {
+			renderedArgs = append(renderedArgs, "--k3s-server-arg", fmt.Sprintf("%s", v))
+		}
 	}
 
 	if o.KubeconfigSwitchContext != nil {
@@ -342,7 +348,9 @@ func (o *createOptions) toArgs() []string {
 	}
 
 	if o.labels != nil {
-		renderedArgs = append(renderedArgs, "--label", fmt.Sprintf("%s", o.labels))
+		for _, v := range o.labels {
+			renderedArgs = append(renderedArgs, "--label", fmt.Sprintf("%s", v))
+		}
 	}
 
 	if o.network != nil {
@@ -366,7 +374,9 @@ func (o *createOptions) toArgs() []string {
 	}
 
 	if o.port != nil {
-		renderedArgs = append(renderedArgs, "--port", fmt.Sprintf("%s", ptrhelpers.StringValue(o.port)))
+		for _, v := range o.port {
+			renderedArgs = append(renderedArgs, "--port", fmt.Sprintf("%s", v))
+		}
 	}
 
 	if o.registryConfig != nil {
@@ -398,7 +408,9 @@ func (o *createOptions) toArgs() []string {
 	}
 
 	if o.volume != nil {
-		renderedArgs = append(renderedArgs, "--volume", fmt.Sprintf("%s", o.volume))
+		for _, v := range o.volume {
+			renderedArgs = append(renderedArgs, "--volume", fmt.Sprintf("%s", v))
+		}
 	}
 
 	if o.wait != nil {

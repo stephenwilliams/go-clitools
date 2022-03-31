@@ -243,7 +243,9 @@ func (o *treeOptions) toArgs() []string {
 	}
 
 	if o.field != nil {
-		renderedArgs = append(renderedArgs, "--field", fmt.Sprintf("%s", o.field))
+		for _, v := range o.field {
+			renderedArgs = append(renderedArgs, "--field", fmt.Sprintf("%s", v))
+		}
 	}
 
 	if o.graphStructure != nil {

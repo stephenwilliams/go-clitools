@@ -198,7 +198,7 @@
               "name": "port",
               "exportedName": "Port",
               "description": "Map ports from the node containers to the host (Format: [HOST:][HOSTPORT:]CONTAINERPORT[/PROTOCOL][@NODEFILTER])",
-              "type": "string",
+              "type": "stringSlice",
               "repeated": true,
               "format": ["--port", "%s"]
             },

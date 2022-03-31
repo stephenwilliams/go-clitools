@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/dave/jennifer v1.4.1
-	github.com/davecgh/go-spew v1.1.1
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/stephenwilliams/go-clitools v0.0.0-00010101000000-000000000000
 	github.com/stretchr/testify v1.4.0 // indirect
