@@ -22,7 +22,8 @@
       "owner": "caarlos0",
       "repository": "svu",
       "tagPrefix": "v",
-      "assetSelector": "svu_{{trimPrefix \"v\" .Version}}_{{.OS}}_{{.Arch}}.tar.gz",
+      "assetSelector": "svu_{{trimPrefix \"v\" .Version}}_{{.OS}}_({{.Arch}}|all).tar.gz",
+      "assetSelectorRegexp": true,
       "archived": true,
       "archivePath": "svu"
     }

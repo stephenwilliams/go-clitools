@@ -279,6 +279,9 @@ type GithubReleaseDownloader struct {
 	// AssetSelector corresponds to the JSON schema field "assetSelector".
 	AssetSelector string `json:"assetSelector"`
 
+	// AssetSelectorRegexp corresponds to the JSON schema field "assetSelectorRegexp".
+	AssetSelectorRegexp *bool `json:"assetSelectorRegexp,omitempty"`
+
 	// When multiple different "releases" are released from a singular GitHub
 	// repository
 	MultipleReleases *bool `json:"multipleReleases,omitempty"`

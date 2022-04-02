@@ -51,6 +51,7 @@ func (g *downloadersGenerator) githubReleaseStructValues() func(dict Dict) {
 		d[Id("Owner")] = Lit(release.Owner)
 		d[Id("Repository")] = Lit(release.Repository)
 		d[Id("AssetSelector")] = Lit(release.AssetSelector)
+		d[Id("AssetSelectorRegexp")] = Lit(ptrhelpers.BoolValue(release.AssetSelectorRegexp))
 
 		if release.TagPrefix != nil {
 			d[Id("TagPrefix")] = Lit(ptrhelpers.StringValue(release.TagPrefix))

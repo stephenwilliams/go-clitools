@@ -417,6 +417,9 @@
         "assetSelector": {
           "type": "string"
         },
+        "assetSelectorRegexp": {
+          "type": "boolean"
+        },
         "archived": {
           "type": "boolean"
         },

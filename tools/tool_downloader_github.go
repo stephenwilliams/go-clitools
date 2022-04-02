@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"text/template"
 
@@ -23,10 +24,12 @@ type GithubReleaseDownloader struct {
 	ToolExecutable string
 	Owner          string
 	Repository     string
-	AssetSelector  string
 	TagPrefix      string
-	Archived       bool
-	ArchivePath    string
+
+	AssetSelector       string
+	AssetSelectorRegexp bool
+	Archived            bool
+	ArchivePath         string
 
 	MultipleReleases          bool
 	MultipleReleasesTagPrefix string
@@ -291,10 +294,25 @@ func (d *GithubReleaseDownloader) downloadAsset(dir string, release *github.Rele
 		assetName = d.AssetSelector
 	}
 
+	var assetSelectorRegexp *regexp.Regexp
+	if d.AssetSelectorRegexp {
+		var err error
+		assetSelectorRegexp, err = regexp.Compile(assetName)
+		if err != nil {
+			return "", fmt.Errorf("failed to compile asset selector regexp: %w", err)
+		}
+	}
+
 	var asset *github.Asset
 	for _, asset = range release.Assets {
-		if assetName == asset.Name {
-			break
+		if assetSelectorRegexp != nil {
+			if assetSelectorRegexp.MatchString(asset.Name) {
+				break
+			}
+		} else {
+			if assetName == asset.Name {
+				break
+			}
 		}
 	}
 

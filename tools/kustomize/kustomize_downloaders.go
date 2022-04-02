@@ -6,6 +6,7 @@ var GithubReleaseDownloader = &tools.GithubReleaseDownloader{
 	ArchivePath:               "kustomize",
 	Archived:                  true,
 	AssetSelector:             "kustomize_v{{trimPrefix \"v\" .Version}}_{{.OS}}_{{.Arch}}.tar.gz",
+	AssetSelectorRegexp:       false,
 	MultipleReleases:          true,
 	MultipleReleasesTagPrefix: "kustomize/",
 	Owner:                     "kubernetes-sigs",
