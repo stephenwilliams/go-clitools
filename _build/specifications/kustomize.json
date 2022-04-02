@@ -37,7 +37,10 @@
       "repository": "kustomize",
       "assetSelector": "kustomize_v{{trimPrefix \"v\" .Version}}_{{.OS}}_{{.Arch}}.tar.gz",
       "archived": true,
-      "archivePath": "kustomize"
+      "archivePath": "kustomize",
+      "multipleReleases": true,
+      "multipleReleasesTagPrefix": "kustomize/",
+      "tagPrefix": "v"
     }
   },
   "groups": [

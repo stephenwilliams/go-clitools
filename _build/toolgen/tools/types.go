@@ -2,11 +2,9 @@
 
 package tools
 
-import (
-	"encoding/json"
-	"fmt"
-	"reflect"
-)
+import "fmt"
+import "encoding/json"
+import "reflect"
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (j *OptionSet) UnmarshalJSON(b []byte) error {
@@ -281,10 +279,18 @@ type GithubReleaseDownloader struct {
 	// AssetSelector corresponds to the JSON schema field "assetSelector".
 	AssetSelector string `json:"assetSelector"`
 
-	// Github repository owner
+	// When multiple different "releases" are released from a singular GitHub
+	// repository
+	MultipleReleases *bool `json:"multipleReleases,omitempty"`
+
+	// When multiple different "releases" are released from a singular GitHub
+	// repository.
+	MultipleReleasesTagPrefix *string `json:"multipleReleasesTagPrefix,omitempty"`
+
+	// GitHub repository owner
 	Owner string `json:"owner"`
 
-	// Github repository name
+	// GitHub repository name
 	Repository string `json:"repository"`
 
 	// TagPrefix corresponds to the JSON schema field "tagPrefix".

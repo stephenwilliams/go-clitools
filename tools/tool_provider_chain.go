@@ -2,9 +2,8 @@ package tools
 
 import (
 	"errors"
-	"github.com/hashicorp/go-multierror"
-
 	"github.com/Masterminds/semver/v3"
+	"github.com/hashicorp/go-multierror"
 )
 
 type ChainToolProvider struct {

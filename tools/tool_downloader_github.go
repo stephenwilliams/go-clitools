@@ -27,6 +27,9 @@ type GithubReleaseDownloader struct {
 	TagPrefix      string
 	Archived       bool
 	ArchivePath    string
+
+	MultipleReleases          bool
+	MultipleReleasesTagPrefix string
 }
 
 var _ Downloader = &GithubReleaseDownloader{}
@@ -62,7 +65,7 @@ func (d *GithubReleaseDownloader) DownloadWithVersion(version *semver.Version) (
 }
 
 func (d *GithubReleaseDownloader) downloadRelease(release *github.Release) (string, error) {
-	dest := pathForTool(d.ToolExecutable, release.TagName)
+	dest := pathForTool(d.ToolExecutable, d.formatVersion(release))
 
 	if found, err := fileExists(dest); err != nil {
 		return "", err
@@ -136,9 +139,19 @@ func (d *GithubReleaseDownloader) findRelease(constraints *semver.Constraints) (
 		return release, nil
 	}
 
+	renderedTagPrefix := d.MultipleReleasesTagPrefix + d.TagPrefix
+
 	selector := func(releases []*github.Release) (*github.Release, error) {
 		for _, r := range releases {
-			v, err := semver.NewVersion(r.TagName)
+			if r.Draft || r.Prerelease {
+				continue
+			}
+
+			if d.MultipleReleases && !strings.HasPrefix(r.TagName, renderedTagPrefix) {
+				continue
+			}
+
+			v, err := semver.NewVersion(d.formatVersion(r))
 			if err != nil {
 				continue
 			}
@@ -165,6 +178,47 @@ func (d *GithubReleaseDownloader) findRelease(constraints *semver.Constraints) (
 	return release, nil
 }
 
+// findLatestInMultipleRelease finds the latest release when a repository releases multiple applications out of the same
+// repository with different tag prefixes
+func (d *GithubReleaseDownloader) findLatestInMultipleRelease() (*github.Release, error) {
+	release := &github.Release{}
+	key := fmt.Sprintf("%s_%s", d.Owner, d.Repository)
+	if ok, err := getCache("github-release", key, "latest_multiple_release", release); err != nil {
+		return nil, err
+	} else if ok {
+		return release, nil
+	}
+
+	renderedTagPrefix := d.MultipleReleasesTagPrefix + d.TagPrefix
+
+	selector := func(releases []*github.Release) (*github.Release, error) {
+		for _, r := range releases {
+			if r.Draft || r.Prerelease {
+				continue
+			}
+
+			if strings.HasPrefix(r.TagName, renderedTagPrefix) {
+				return r, nil
+			}
+		}
+
+		return nil, nil
+	}
+
+	release, err := github.FindRelease(d.Owner, d.Repository, selector)
+	if err != nil {
+		return nil, err
+	} else if release == nil {
+		return nil, errors.New("github release not found")
+	}
+
+	if err := setCache("github-release", key, "latest_multiple_release", release); err != nil {
+		return nil, err
+	}
+
+	return release, nil
+}
+
 func (d *GithubReleaseDownloader) getRelease(version string) (*github.Release, error) {
 	if version == "" {
 		version = "latest"
@@ -178,15 +232,27 @@ func (d *GithubReleaseDownloader) getRelease(version string) (*github.Release, e
 	}
 
 	if version == "latest" {
-		var err error
-		release, err = github.GetLatestRelease(d.Owner, d.Repository)
-		if err != nil {
-			return nil, err
+		if d.MultipleReleases {
+			var err error
+			release, err = d.findLatestInMultipleRelease()
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			var err error
+			release, err = github.GetLatestRelease(d.Owner, d.Repository)
+			if err != nil {
+				return nil, err
+			}
 		}
 	} else {
 		v := version
 		if d.TagPrefix != "" && !strings.HasPrefix(v, d.TagPrefix) {
 			v = d.TagPrefix + v
+		}
+
+		if d.MultipleReleases {
+			v = d.MultipleReleasesTagPrefix + v
 		}
 
 		var err error
@@ -216,7 +282,7 @@ func (d *GithubReleaseDownloader) downloadAsset(dir string, release *github.Rele
 		}
 
 		sb := strings.Builder{}
-		if err := t.Execute(&sb, getDownloaderTemplateData(release.Name)); err != nil {
+		if err := t.Execute(&sb, getDownloaderTemplateData(d.formatVersion(release))); err != nil {
 			return "", err
 		}
 
@@ -260,7 +326,7 @@ func (d *GithubReleaseDownloader) extractTool(dir, archive string, release *gith
 		}
 
 		sb := strings.Builder{}
-		if err := t.Execute(&sb, getDownloaderTemplateData(release.Name)); err != nil {
+		if err := t.Execute(&sb, getDownloaderTemplateData(d.formatVersion(release))); err != nil {
 			return "", err
 		}
 
@@ -278,4 +344,12 @@ func (d *GithubReleaseDownloader) extractTool(dir, archive string, release *gith
 	}
 
 	return path, nil
+}
+
+func (d *GithubReleaseDownloader) formatVersion(r *github.Release) string {
+	if d.MultipleReleases {
+		return strings.TrimPrefix(r.TagName, d.MultipleReleasesTagPrefix)
+	}
+
+	return r.TagName
 }

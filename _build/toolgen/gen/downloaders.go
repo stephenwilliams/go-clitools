@@ -60,5 +60,10 @@ func (g *downloadersGenerator) githubReleaseStructValues() func(dict Dict) {
 			d[Id("Archived")] = True()
 			d[Id("ArchivePath")] = Lit(ptrhelpers.StringValue(release.ArchivePath))
 		}
+
+		if ptrhelpers.BoolValue(release.MultipleReleases) {
+			d[Id("MultipleReleases")] = True()
+			d[Id("MultipleReleasesTagPrefix")] = Lit(ptrhelpers.StringValue(release.MultipleReleasesTagPrefix))
+		}
 	}
 }

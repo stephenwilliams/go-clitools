@@ -1,6 +1,8 @@
 package tools
 
-import "github.com/Masterminds/semver/v3"
+import (
+	"github.com/Masterminds/semver/v3"
+)
 
 type DownloaderToolProvider struct {
 	Downloader Downloader
@@ -8,7 +10,8 @@ type DownloaderToolProvider struct {
 
 func (p *DownloaderToolProvider) GetPath(tool ToolInfo, version string) (string, error) {
 	if version == "" {
-		return p.Downloader.Download(version)
+		res, err := p.Downloader.Download(version)
+		return res, err
 	}
 
 	if isVersionConstraints(version) {

@@ -328,8 +328,7 @@
       "required": [
         "name",
         "exportedName"
-      ],
-      "additionalProperties": false
+      ]
     },
     "commandGroup": {
       "type": "object",
@@ -406,11 +405,11 @@
       "properties": {
         "owner": {
           "type": "string",
-          "description": "Github repository owner"
+          "description": "GitHub repository owner"
         },
         "repository": {
           "type": "string",
-          "description": "Github repository name"
+          "description": "GitHub repository name"
         },
         "tagPrefix": {
           "type": "string"
@@ -423,6 +422,14 @@
         },
         "archivePath": {
           "type": "string"
+        },
+        "multipleReleases": {
+          "type": "boolean",
+          "description": "When multiple different \"releases\" are released from a singular GitHub repository"
+        },
+        "multipleReleasesTagPrefix": {
+          "type": "string",
+          "description": "When multiple different \"releases\" are released from a singular GitHub repository."
         }
       },
       "required": [
