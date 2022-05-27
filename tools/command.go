@@ -20,6 +20,7 @@ type command struct {
 	wd          string
 	ignoreOSEnv bool
 	logger      Logger
+	stdin       io.Reader
 }
 
 type CommandOption = func(c *command)
@@ -51,6 +52,12 @@ func SetLogger(logger Logger) CommandOption {
 func SetNOOPLogger() CommandOption {
 	return func(c *command) {
 		c.logger = NOOPLogger{}
+	}
+}
+
+func SetStdin(stdin io.Reader) CommandOption {
+	return func(c *command) {
+		c.stdin = stdin
 	}
 }
 

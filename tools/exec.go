@@ -13,6 +13,7 @@ func (c *CommandContext) createCommand(opts []CommandOption) *command {
 		cmd:    c.Path,
 		args:   c.Args,
 		logger: DefaultLogger,
+		stdin:  os.Stdin,
 	}
 
 	for _, opt := range opts {
@@ -47,7 +48,7 @@ func (c *command) execute(ctx context.Context, stdout, stderr io.Writer) (ran bo
 
 	cmd.Stderr = stderr
 	cmd.Stdout = stdout
-	cmd.Stdin = os.Stdin
+	cmd.Stdin = c.stdin
 	cmd.Dir = c.wd
 	c.logger.Log(cmd.Path, c.args, cmd.Env)
 	err = cmd.Run()
